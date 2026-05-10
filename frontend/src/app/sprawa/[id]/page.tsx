@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   fetchCase,
@@ -11,8 +11,8 @@ import {
 } from "@/lib/api";
 import { DocumentPanel } from "@/components/DocumentPanel";
 import { EntityList } from "@/components/EntityList";
+import { SelectionPopup } from "@/components/SelectionPopup";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,9 +28,8 @@ export default function SprawaPage() {
   const [loading, setLoading] = useState(true);
   const [pseudoText, setPseudoText] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [addText, setAddText] = useState("");
-  const [addType, setAddType] = useState("PERSON");
   const [copied, setCopied] = useState(false);
+  const originalPanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchCase(id).then((data) => {
@@ -61,13 +60,11 @@ export default function SprawaPage() {
     setSaving(false);
   }
 
-  async function handleAddEntity() {
-    if (!addText.trim()) return;
-    await addEntity(id, addText, addType);
+  async function handleAddFromSelection(text: string, type: string) {
+    await addEntity(id, text, type);
     const updated = await fetchCase(id);
     setCaseData(updated);
     setApproved(updated.approved);
-    setAddText("");
   }
 
   async function handleCopy() {
@@ -114,7 +111,7 @@ export default function SprawaPage() {
               onClick={() => router.push("/")}
               className="text-neutral-400 hover:text-neutral-600 transition-colors"
             >
-              ← Sprawy
+              ← Dokumenty
             </button>
             <span className="text-neutral-300">/</span>
             <h1 className="text-xl font-semibold text-neutral-900">
@@ -174,14 +171,21 @@ export default function SprawaPage() {
         {/* Review Tab */}
         <TabsContent value="review" className="space-y-6">
           {/* Side by side documents */}
-          <div className="grid grid-cols-2 gap-6" style={{ height: "500px" }}>
-            <DocumentPanel
-              text={caseData.original_text}
-              entities={caseData.entities}
-              approved={approved}
-              mode="original"
-              title="Oryginał — podświetlone dane"
-            />
+          <div className="grid grid-cols-2 gap-6 h-[500px]">
+            <div className="relative min-h-0">
+              <DocumentPanel
+                ref={originalPanelRef}
+                text={caseData.original_text}
+                entities={caseData.entities}
+                approved={approved}
+                mode="original"
+                title="Oryginał — podświetlone dane"
+              />
+              <SelectionPopup
+                containerRef={originalPanelRef}
+                onAdd={handleAddFromSelection}
+              />
+            </div>
             <DocumentPanel
               text={caseData.original_text}
               entities={caseData.entities}
@@ -210,37 +214,6 @@ export default function SprawaPage() {
             </Card>
           </div>
 
-          {/* Add entity manually */}
-          <Card className="p-4">
-            <h4 className="text-sm font-medium text-neutral-700 mb-3">
-              Dodaj brakującą encję
-            </h4>
-            <div className="flex items-center gap-3">
-              <Input
-                value={addText}
-                onChange={(e) => setAddText(e.target.value)}
-                placeholder="Tekst do zanonimizowania"
-                className="flex-1"
-              />
-              <select
-                value={addType}
-                onChange={(e) => setAddType(e.target.value)}
-                className="h-9 px-3 rounded-md border border-neutral-200 text-sm bg-white"
-              >
-                <option value="PERSON">Osoba</option>
-                <option value="LOCATION">Lokalizacja</option>
-                <option value="ORGANIZATION">Organizacja</option>
-                <option value="CONTEXTUAL">Kontekstowy</option>
-                <option value="OTHER">Inne</option>
-              </select>
-              <Button variant="outline" onClick={handleAddEntity}>
-                Dodaj
-              </Button>
-            </div>
-            <p className="text-xs text-neutral-400 mt-2">
-              Wpisz dokładny tekst z dokumentu, który powinien zostać zastąpiony
-            </p>
-          </Card>
         </TabsContent>
 
         {/* Export Tab */}

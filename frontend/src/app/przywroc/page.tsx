@@ -52,7 +52,7 @@ export default function PrzywrocPage() {
           </label>
           {cases.length === 0 ? (
             <p className="text-sm text-neutral-400">
-              Brak spraw z zapisanym mapowaniem. Najpierw zanonimizuj dokument.
+              Brak dokumentów z zapisanym mapowaniem. Najpierw zanonimizuj dokument.
             </p>
           ) : (
             <select

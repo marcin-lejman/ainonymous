@@ -31,7 +31,7 @@ export default function NowaSprawaPage() {
     setProgress(20);
 
     const formData = new FormData();
-    formData.append("case_name", caseName || "Nowa sprawa");
+    formData.append("case_name", caseName || "Nowy dokument");
     formData.append("use_llm", String(useLlm));
 
     if (file) {
@@ -57,7 +57,7 @@ export default function NowaSprawaPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-neutral-900">Nowa sprawa</h1>
+        <h1 className="text-2xl font-semibold text-neutral-900">Nowy dokument</h1>
         <p className="text-neutral-500 text-sm mt-1">
           Prześlij dokument lub wklej tekst do anonimizacji
         </p>
@@ -89,11 +89,11 @@ export default function NowaSprawaPage() {
             <Input
               value={caseName}
               onChange={(e) => setCaseName(e.target.value)}
-              placeholder="np. Umowa najmu Kowalski"
+              placeholder="np. Umowa najmu — Kowalski"
               className="max-w-md"
             />
             <p className="text-xs text-neutral-400 mt-1">
-              Pomaga odnaleźć sprawę później. Możesz zostawić puste.
+              Pomaga odnaleźć dokument później. Możesz zostawić puste.
             </p>
           </div>
 
@@ -150,7 +150,8 @@ export default function NowaSprawaPage() {
                   Analiza kontekstowa (Bielik AI)
                 </p>
                 <p className="text-xs text-neutral-500 mt-0.5">
-                  Wykrywa identyfikatory opisowe, np. &quot;jedyna wspólniczka w biurze&quot;
+                  Wykrywa identyfikatory opisowe, np. &quot;jedyna wspólniczka w biurze&quot;.
+                  <span className="text-green-600 font-medium"> Model działa lokalnie — dane nie opuszczają Twojego komputera.</span>
                 </p>
               </div>
               <Switch
@@ -189,7 +190,7 @@ export default function NowaSprawaPage() {
           <Button
             onClick={handleAnalyze}
             size="lg"
-            className="w-full"
+            className="w-full bg-gradient-to-r from-violet-500 to-indigo-600 hover:from-violet-600 hover:to-indigo-700 shadow-sm shadow-violet-200"
             disabled={!text.trim() && !file}
           >
             Analizuj dokument
