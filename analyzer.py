@@ -100,8 +100,34 @@ def build_analyzer():
     return analyzer
 
 
+def _extend_locations_with_numbers(results, text):
+    """Extend LOCATION entities to include trailing street/apartment numbers."""
+    import re
+    from presidio_analyzer import RecognizerResult
+    extended = []
+    for r in results:
+        if r.entity_type != "LOCATION":
+            extended.append(r)
+            continue
+        end = r.end
+        remaining = text[end:end + 20]
+        m = re.match(r"(\s+\d+(?:[/]\d+)?(?:\s+m\.\s*\d+)?)", remaining)
+        if m:
+            extended.append(RecognizerResult(
+                entity_type=r.entity_type,
+                start=r.start,
+                end=end + m.end(),
+                score=r.score,
+                analysis_explanation=r.analysis_explanation,
+            ))
+        else:
+            extended.append(r)
+    return extended
+
+
 def post_process(results, text):
     """Filter and resolve collisions in analyzer results."""
+    results = _extend_locations_with_numbers(results, text)
     filtered = []
 
     for r in results:

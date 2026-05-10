@@ -67,18 +67,13 @@ export const DocumentPanel = forwardRef<HTMLDivElement, Props>(
 
     return (
       <div className="flex flex-col min-h-0">
-        <div className="flex items-center justify-between mb-3 shrink-0">
-          <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide">
+        <div className="flex items-center justify-between mb-2 shrink-0">
+          <h3 className="text-sm font-medium text-neutral-600">
             {title}
           </h3>
           {mode === "original" && (
-            <span className="text-[11px] text-violet-500 font-medium">
-              Zaznacz tekst, aby dodać encję
-            </span>
-          )}
-          {mode === "pseudonymized" && (
-            <span className="text-xs text-green-600 font-medium">
-              Dane zastąpione
+            <span className="text-xs text-neutral-500">
+              zaznacz tekst → dodaj encję
             </span>
           )}
         </div>
@@ -87,7 +82,7 @@ export const DocumentPanel = forwardRef<HTMLDivElement, Props>(
           className="relative flex-1 min-h-0 overflow-y-auto rounded-lg border border-neutral-200 bg-neutral-50"
         >
           <div
-            className="p-5 font-mono text-[13px] leading-7 whitespace-pre-wrap break-words select-text"
+            className="p-5 font-mono text-sm leading-7 whitespace-pre-wrap break-words select-text"
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </div>

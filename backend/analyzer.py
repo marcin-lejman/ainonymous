@@ -90,7 +90,44 @@ def get_analyzer():
     return analyzer
 
 
+def _extend_locations_with_numbers(results, text):
+    """Extend LOCATION entities to include trailing street/apartment numbers.
+
+    e.g. if spaCy detects "Długiej" but the text says "Długiej 15",
+    extend the entity to cover "Długiej 15".
+    Handles patterns like: 15, 42/8, 102/7, 23 m. 15
+    """
+    import re
+    extended = []
+    for r in results:
+        if r.entity_type != "LOCATION":
+            extended.append(r)
+            continue
+
+        end = r.end
+        remaining = text[end:end + 20]  # look ahead up to 20 chars
+
+        # Match optional space + number + optional /number or m. number
+        m = re.match(r"(\s+\d+(?:[/]\d+)?(?:\s+m\.\s*\d+)?)", remaining)
+        if m:
+            # Create a new result with extended end
+            from presidio_analyzer import RecognizerResult
+            extended.append(RecognizerResult(
+                entity_type=r.entity_type,
+                start=r.start,
+                end=end + m.end(),
+                score=r.score,
+                analysis_explanation=r.analysis_explanation,
+            ))
+        else:
+            extended.append(r)
+    return extended
+
+
 def post_process(results, text):
+    # Extend locations to include street numbers
+    results = _extend_locations_with_numbers(results, text)
+
     filtered = []
     for r in results:
         entity_text = text[r.start:r.end].strip()

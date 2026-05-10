@@ -116,7 +116,7 @@ export default function DashboardPage() {
                       minute: "2-digit",
                     })}
                     <span className="mx-1.5 text-neutral-300">·</span>
-                    {c.entity_count} wykrytych encji
+                    {c.entity_count === 1 ? "1 encja" : c.entity_count % 10 >= 2 && c.entity_count % 10 <= 4 && (c.entity_count % 100 < 12 || c.entity_count % 100 > 14) ? `${c.entity_count} encje` : `${c.entity_count} encji`}
                     {c.has_pseudonymized && (
                       <>
                         <span className="mx-1.5 text-neutral-300">·</span>
