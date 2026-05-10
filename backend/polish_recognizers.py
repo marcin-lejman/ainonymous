@@ -1,0 +1,235 @@
+import re
+from presidio_analyzer import (
+    AnalysisExplanation,
+    Pattern,
+    PatternRecognizer,
+    RecognizerResult,
+)
+
+
+class PeselRecognizer(PatternRecognizer):
+    PATTERNS = [
+        Pattern(name="pesel_pattern", regex=r"\b\d{11}\b", score=0.4),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="PESEL",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=["pesel", "nr ewidencyjny", "numer ewidencyjny"],
+        )
+
+    @staticmethod
+    def _checksum_valid(digits):
+        weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3]
+        checksum = sum(int(d) * w for d, w in zip(digits[:10], weights)) % 10
+        checksum = (10 - checksum) % 10
+        return checksum == int(digits[10])
+
+    def analyze(self, text, entities, nlp_artifacts=None):
+        results = super().analyze(text, entities, nlp_artifacts)
+        text_lower = text.lower()
+        for m in re.finditer(r"\b\d{11}\b", text):
+            if self._checksum_valid(m.group()):
+                continue
+            window_start = max(0, m.start() - 50)
+            window = text_lower[window_start:m.start()]
+            if "pesel" in window or "ewidencyjny" in window:
+                results.append(RecognizerResult(
+                    entity_type="PESEL",
+                    start=m.start(),
+                    end=m.end(),
+                    score=0.75,
+                    analysis_explanation=AnalysisExplanation(
+                        recognizer=self.__class__.__name__,
+                        original_score=0.75,
+                        pattern_name="pesel_context_fallback",
+                        pattern=r"\b\d{11}\b",
+                        validation_result=0.75,
+                    ),
+                ))
+        return results
+
+    def validate_result(self, pattern_text):
+        if len(pattern_text) != 11 or not pattern_text.isdigit():
+            return False
+        return self._checksum_valid(pattern_text)
+
+
+class NipRecognizer(PatternRecognizer):
+    PATTERNS = [
+        Pattern(name="nip_dashed", regex=r"\b\d{3}-\d{3}-\d{2}-\d{2}\b", score=0.7),
+        Pattern(name="nip_plain", regex=r"\b\d{10}\b", score=0.4),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="NIP",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=["nip", "numer identyfikacji podatkowej", "identyfikacji podatkowej"],
+        )
+
+    @staticmethod
+    def _checksum_valid(digits):
+        weights = [6, 5, 7, 2, 3, 4, 5, 6, 7]
+        checksum = sum(int(d) * w for d, w in zip(digits[:9], weights)) % 11
+        if checksum == 10:
+            return False
+        return checksum == int(digits[9])
+
+    def analyze(self, text, entities, nlp_artifacts=None):
+        results = super().analyze(text, entities, nlp_artifacts)
+        text_lower = text.lower()
+        for m in re.finditer(r"\b\d{3}-\d{3}-\d{2}-\d{2}\b", text):
+            digits = "".join(c for c in m.group() if c.isdigit())
+            if self._checksum_valid(digits):
+                continue
+            window_start = max(0, m.start() - 30)
+            window = text_lower[window_start:m.start()]
+            if "nip" in window:
+                results.append(RecognizerResult(
+                    entity_type="NIP",
+                    start=m.start(),
+                    end=m.end(),
+                    score=0.75,
+                    analysis_explanation=AnalysisExplanation(
+                        recognizer=self.__class__.__name__,
+                        original_score=0.75,
+                        pattern_name="nip_context_fallback",
+                        pattern=r"\b\d{3}-\d{3}-\d{2}-\d{2}\b",
+                        validation_result=0.75,
+                    ),
+                ))
+        return results
+
+    def validate_result(self, pattern_text):
+        digits = "".join(c for c in pattern_text if c.isdigit())
+        if len(digits) != 10:
+            return False
+        return self._checksum_valid(digits)
+
+
+class RegonRecognizer(PatternRecognizer):
+    PATTERNS = [
+        Pattern(name="regon_9", regex=r"\b\d{9}\b", score=0.3),
+        Pattern(name="regon_14", regex=r"\b\d{14}\b", score=0.3),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="REGON",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=["regon"],
+        )
+
+    @staticmethod
+    def _checksum_valid(digits):
+        if len(digits) == 9:
+            weights = [8, 9, 2, 3, 4, 5, 6, 7]
+            checksum = sum(int(d) * w for d, w in zip(digits[:8], weights)) % 11
+            checksum = checksum if checksum != 10 else 0
+            return checksum == int(digits[8])
+        elif len(digits) == 14:
+            weights = [2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8]
+            checksum = sum(int(d) * w for d, w in zip(digits[:13], weights)) % 11
+            checksum = checksum if checksum != 10 else 0
+            return checksum == int(digits[13])
+        return False
+
+    def analyze(self, text, entities, nlp_artifacts=None):
+        results = super().analyze(text, entities, nlp_artifacts)
+        text_lower = text.lower()
+        for m in re.finditer(r"\b\d{9}\b", text):
+            if self._checksum_valid(m.group()):
+                continue
+            window_start = max(0, m.start() - 30)
+            window = text_lower[window_start:m.start()]
+            if "regon" in window:
+                results.append(RecognizerResult(
+                    entity_type="REGON",
+                    start=m.start(),
+                    end=m.end(),
+                    score=0.75,
+                    analysis_explanation=AnalysisExplanation(
+                        recognizer=self.__class__.__name__,
+                        original_score=0.75,
+                        pattern_name="regon_context_fallback",
+                        pattern=r"\b\d{9}\b",
+                        validation_result=0.75,
+                    ),
+                ))
+        return results
+
+    def validate_result(self, pattern_text):
+        if not pattern_text.isdigit():
+            return False
+        return self._checksum_valid(pattern_text)
+
+
+class KrsRecognizer(PatternRecognizer):
+    PATTERNS = [
+        Pattern(name="krs_0000", regex=r"\b0000\d{6}\b", score=0.4),
+        Pattern(name="krs_generic", regex=r"\b\d{10}\b", score=0.01),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="KRS",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=["krs", "krajowy rejestr sądowy", "rejestr przedsiębiorców"],
+        )
+
+
+class PolishIbanRecognizer(PatternRecognizer):
+    PATTERNS = [
+        Pattern(
+            name="iban_pl_spaced",
+            regex=r"\bPL\s?\d{2}\s\d{4}\s\d{4}\s\d{4}\s\d{4}\s\d{4}\s\d{4}\b",
+            score=0.9,
+        ),
+        Pattern(name="iban_pl_compact", regex=r"\bPL\s?\d{26}\b", score=0.9),
+        Pattern(
+            name="iban_no_prefix_spaced",
+            regex=r"\b\d{2}\s\d{4}\s\d{4}\s\d{4}\s\d{4}\s\d{4}\s\d{4}\b",
+            score=0.3,
+        ),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="IBAN_CODE",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=[
+                "rachunek", "konto", "nr rachunku", "numer rachunku",
+                "rachunek bankowy", "nr konta", "iban", "przelew",
+                "wpłat", "wpłata",
+            ],
+        )
+
+
+class PolishPhoneRecognizer(PatternRecognizer):
+    PATTERNS = [
+        Pattern(
+            name="pl_phone_intl",
+            regex=r"(?:\+48|0048)\s?\d{2,3}[\s-]?\d{3}[\s-]?\d{2,3}[\s-]?\d{0,2}\b",
+            score=0.5,
+        ),
+        Pattern(name="pl_phone_dashed", regex=r"\b48-\d{3}-\d{3}-\d{3}\b", score=0.6),
+        Pattern(name="pl_phone_landline", regex=r"\b\d{2}\s\d{3}\s\d{2}\s\d{2}\b", score=0.3),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="PHONE_NUMBER",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=[
+                "tel", "tel.", "telefon", "telefonu", "telefoniczn",
+                "kontakt", "mobile", "komórk", "numer telefonu",
+            ],
+        )
