@@ -124,7 +124,43 @@ def _extend_locations_with_numbers(results, text):
     return extended
 
 
+def _merge_adjacent_orgs(results, text):
+    """Merge ORGANIZATION entities that are adjacent or separated only by whitespace.
+
+    spaCy often splits 'ByteForge Sp.' and 'z o.o.' into two entities.
+    This merges them into one.
+    """
+    from presidio_analyzer import RecognizerResult
+    orgs = [r for r in results if r.entity_type == "ORGANIZATION"]
+    others = [r for r in results if r.entity_type != "ORGANIZATION"]
+
+    if len(orgs) <= 1:
+        return results
+
+    orgs.sort(key=lambda r: r.start)
+    merged = [orgs[0]]
+
+    for curr in orgs[1:]:
+        prev = merged[-1]
+        gap = text[prev.end:curr.start]
+        # Merge if gap is only whitespace (up to 3 chars)
+        if len(gap) <= 3 and gap.strip() == "":
+            merged[-1] = RecognizerResult(
+                entity_type="ORGANIZATION",
+                start=prev.start,
+                end=curr.end,
+                score=max(prev.score, curr.score),
+                analysis_explanation=prev.analysis_explanation,
+            )
+        else:
+            merged.append(curr)
+
+    return others + merged
+
+
 def post_process(results, text):
+    # Merge adjacent ORG entities (e.g. "ByteForge Sp." + "z o.o.")
+    results = _merge_adjacent_orgs(results, text)
     # Extend locations to include street numbers
     results = _extend_locations_with_numbers(results, text)
 

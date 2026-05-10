@@ -125,8 +125,34 @@ def _extend_locations_with_numbers(results, text):
     return extended
 
 
+def _merge_adjacent_orgs(results, text):
+    """Merge adjacent ORGANIZATION entities separated only by whitespace."""
+    from presidio_analyzer import RecognizerResult
+    orgs = [r for r in results if r.entity_type == "ORGANIZATION"]
+    others = [r for r in results if r.entity_type != "ORGANIZATION"]
+    if len(orgs) <= 1:
+        return results
+    orgs.sort(key=lambda r: r.start)
+    merged = [orgs[0]]
+    for curr in orgs[1:]:
+        prev = merged[-1]
+        gap = text[prev.end:curr.start]
+        if len(gap) <= 3 and gap.strip() == "":
+            merged[-1] = RecognizerResult(
+                entity_type="ORGANIZATION",
+                start=prev.start,
+                end=curr.end,
+                score=max(prev.score, curr.score),
+                analysis_explanation=prev.analysis_explanation,
+            )
+        else:
+            merged.append(curr)
+    return others + merged
+
+
 def post_process(results, text):
     """Filter and resolve collisions in analyzer results."""
+    results = _merge_adjacent_orgs(results, text)
     results = _extend_locations_with_numbers(results, text)
     filtered = []
 
