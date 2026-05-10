@@ -168,7 +168,7 @@ export default function SprawaPage() {
                 <span className="text-base">📋</span>
                 <div>
                   <p className="font-medium text-neutral-800">Kopiuj do schowka</p>
-                  <p className="text-[11px] text-neutral-400">Wklej bezpośrednio do Claude</p>
+                  <p className="text-[11px] text-neutral-400">Wklej bezpośrednio do AI</p>
                 </div>
               </button>
               <button
@@ -190,7 +190,7 @@ export default function SprawaPage() {
       {pseudoText && !saving && (
         <div className="bg-green-50 border border-green-100 rounded-xl px-4 py-3 mb-6 flex items-center gap-2 text-sm text-green-800">
           <span className="text-green-600">✓</span>
-          Zanonimizowany tekst gotowy — wklej do Claude, a potem użyj &quot;Przywróć dane&quot;
+          Zanonimizowany tekst gotowy — wklej do AI, a potem użyj &quot;Przywróć dane&quot;
         </div>
       )}
 

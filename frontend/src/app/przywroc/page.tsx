@@ -1,26 +1,56 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { fetchCases, restoreText, CaseSummary } from "@/lib/api";
+import { useState, useEffect, useRef } from "react";
+import { fetchCases, fetchCase, restoreText, CaseSummary } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import { RestorePanel } from "@/components/RestorePanel";
 
 export default function PrzywrocPage() {
   const [cases, setCases] = useState<CaseSummary[]>([]);
   const [selectedCase, setSelectedCase] = useState("");
+  const [mapping, setMapping] = useState<Record<string, string>>({});
   const [inputText, setInputText] = useState("");
   const [restoredText, setRestoredText] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchCases().then((c) => {
       const withMapping = c.filter((cs) => cs.has_pseudonymized);
       setCases(withMapping);
-      if (withMapping.length > 0) setSelectedCase(withMapping[0].id);
+      if (withMapping.length > 0) {
+        setSelectedCase(withMapping[0].id);
+        loadMapping(withMapping[0].id);
+      }
     });
   }, []);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target as Node)) {
+        setShowExportMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  async function loadMapping(caseId: string) {
+    const data = await fetchCase(caseId);
+    if (data.mapping?.reverse) {
+      setMapping(data.mapping.reverse);
+    }
+  }
+
+  async function handleCaseChange(caseId: string) {
+    setSelectedCase(caseId);
+    setRestoredText("");
+    await loadMapping(caseId);
+  }
 
   async function handleRestore() {
     if (!selectedCase || !inputText.trim()) return;
@@ -33,84 +63,152 @@ export default function PrzywrocPage() {
   async function handleCopy() {
     await navigator.clipboard.writeText(restoredText);
     setCopied(true);
+    setShowExportMenu(false);
     setTimeout(() => setCopied(false), 2000);
   }
 
+  function handleDownload() {
+    const blob = new Blob([restoredText], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "przywrocone_dane.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+    setShowExportMenu(false);
+  }
+
+  const hasDocuments = cases.length > 0;
+
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-neutral-900">Przywróć dane</h1>
-        <p className="text-neutral-500 text-sm mt-1">
-          Wklej odpowiedź z Claude, aby podmienić pseudonimy na prawdziwe dane
-        </p>
+    <div className={restoredText ? "max-w-7xl mx-auto" : "max-w-2xl mx-auto"}>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-neutral-900">Przywróć dane</h1>
+          <p className="text-neutral-500 text-sm mt-1">
+            Wklej odpowiedź z Claude — pseudonimy zostaną zamienione na prawdziwe dane
+          </p>
+        </div>
+        {restoredText && (
+          <div className="relative" ref={exportMenuRef}>
+            <Button
+              onClick={() => setShowExportMenu((v) => !v)}
+              className="bg-gradient-to-r from-violet-500 to-indigo-600 hover:from-violet-600 hover:to-indigo-700 shadow-sm shadow-violet-200"
+            >
+              {copied ? "✓ Skopiowano" : "Eksportuj ▾"}
+            </Button>
+            {showExportMenu && (
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg shadow-neutral-200/50 border border-neutral-200 p-1.5 z-50">
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-left rounded-lg hover:bg-neutral-50 transition-colors"
+                >
+                  <span className="text-base">📋</span>
+                  <div>
+                    <p className="font-medium text-neutral-800">Kopiuj do schowka</p>
+                    <p className="text-[11px] text-neutral-400">Z przywróconymi danymi</p>
+                  </div>
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-left rounded-lg hover:bg-neutral-50 transition-colors"
+                >
+                  <span className="text-base">📄</span>
+                  <div>
+                    <p className="font-medium text-neutral-800">Pobierz jako .txt</p>
+                    <p className="text-[11px] text-neutral-400">Zapisz plik z prawdziwymi danymi</p>
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-            Sprawa
-          </label>
-          {cases.length === 0 ? (
-            <p className="text-sm text-neutral-400">
-              Brak dokumentów z zapisanym mapowaniem. Najpierw zanonimizuj dokument.
-            </p>
-          ) : (
+      {!hasDocuments ? (
+        <Card className="p-8 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-neutral-100 flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🔄</span>
+          </div>
+          <h2 className="text-lg font-semibold text-neutral-800 mb-2">
+            Brak zanonimizowanych dokumentów
+          </h2>
+          <p className="text-neutral-500 text-sm max-w-sm mx-auto">
+            Najpierw zanonimizuj dokument i wyeksportuj go.
+            Mapowanie pseudonimów zapisze się automatycznie.
+          </p>
+        </Card>
+      ) : !restoredText ? (
+        <div className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+              Dokument źródłowy
+            </label>
             <select
               value={selectedCase}
-              onChange={(e) => setSelectedCase(e.target.value)}
-              className="h-9 w-full px-3 rounded-md border border-neutral-200 text-sm bg-white"
+              onChange={(e) => handleCaseChange(e.target.value)}
+              className="h-10 w-full px-3 rounded-lg border border-neutral-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-400 transition-colors"
             >
               {cases.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.name} ({new Date(c.created_at).toLocaleDateString("pl-PL")})
+                  {c.name} — {new Date(c.created_at).toLocaleDateString("pl-PL")}
                 </option>
               ))}
             </select>
-          )}
-          <p className="text-xs text-neutral-400 mt-1">
-            Wybierz sprawę, z której pochodzi mapowanie pseudonimów
-          </p>
-        </div>
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-            Tekst z pseudonimami
-          </label>
-          <Textarea
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="Wklej tutaj odpowiedź z Claude zawierającą [PERSON_1], [LOCATION_2] itp."
-            className="min-h-[200px] font-mono text-sm"
-          />
-        </div>
-
-        <Button
-          onClick={handleRestore}
-          size="lg"
-          className="w-full"
-          disabled={!selectedCase || !inputText.trim() || loading}
-        >
-          {loading ? "Przywracam..." : "Przywróć oryginalne dane"}
-        </Button>
-
-        {restoredText && (
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-neutral-700">
-                Tekst z przywróconymi danymi
-              </h3>
-              <Button variant="outline" size="sm" onClick={handleCopy}>
-                {copied ? "Skopiowano!" : "Kopiuj"}
-              </Button>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+              Odpowiedź z AI
+            </label>
             <Textarea
-              value={restoredText}
-              readOnly
-              className="min-h-[200px] font-mono text-sm bg-neutral-50"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Wklej tekst zawierający [PERSON_1], [LOCATION_2] itp."
+              className="min-h-[220px] font-mono text-sm"
             />
-          </Card>
-        )}
-      </div>
+          </div>
+
+          <Button
+            onClick={handleRestore}
+            size="lg"
+            className="w-full bg-gradient-to-r from-violet-500 to-indigo-600 hover:from-violet-600 hover:to-indigo-700 shadow-sm shadow-violet-200"
+            disabled={!selectedCase || !inputText.trim() || loading}
+          >
+            {loading ? "Przywracam..." : "Przywróć oryginalne dane"}
+          </Button>
+        </div>
+      ) : (
+        <div>
+          {/* Side by side view */}
+          <div className="grid grid-cols-2 gap-6" style={{ height: "600px", overflow: "hidden" }}>
+            <RestorePanel
+              text={inputText}
+              mapping={mapping}
+              mode="pseudonymized"
+              title="Odpowiedź z AI"
+            />
+            <RestorePanel
+              text={restoredText}
+              mapping={mapping}
+              mode="restored"
+              title="Z przywróconymi danymi"
+            />
+          </div>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => {
+                setRestoredText("");
+                setInputText("");
+              }}
+              className="text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
+            >
+              ← Przywróć kolejny tekst
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -14,15 +14,19 @@ const ENTITY_OPTIONS = [
   { type: "ORGANIZATION", label: "Organizacja" },
   { type: "PESEL", label: "PESEL" },
   { type: "NIP", label: "NIP" },
+  { type: "KRS", label: "KRS" },
+  { type: "REGON", label: "REGON" },
+  { type: "IBAN_CODE", label: "IBAN / Nr konta" },
   { type: "PHONE_NUMBER", label: "Telefon" },
   { type: "EMAIL_ADDRESS", label: "E-mail" },
+  { type: "REF_NUMBER", label: "Nr referencyjny" },
   { type: "CONTEXTUAL", label: "Kontekstowy" },
 ];
 
 export function SelectionPopup({ containerRef, onAdd }: Props) {
   const [visible, setVisible] = useState(false);
   const [selectedText, setSelectedText] = useState("");
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 0, y: 0, below: false });
   const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,10 +51,17 @@ export function SelectionPopup({ containerRef, onAdd }: Props) {
       const rect = range.getBoundingClientRect();
       const containerRect = container!.getBoundingClientRect();
 
+      const relX = rect.left - containerRect.left + rect.width / 2;
+      const relTop = rect.top - containerRect.top;
+      const relBottom = rect.bottom - containerRect.top;
+      // Show below if selection is within 120px of container top
+      const showBelow = relTop < 120;
+
       setSelectedText(text);
       setPosition({
-        x: rect.left - containerRect.left + rect.width / 2,
-        y: rect.top - containerRect.top - 8,
+        x: relX,
+        y: showBelow ? relBottom + 8 : relTop - 8,
+        below: showBelow,
       });
       setVisible(true);
     }
@@ -86,9 +97,15 @@ export function SelectionPopup({ containerRef, onAdd }: Props) {
       style={{
         left: position.x,
         top: position.y,
-        transform: "translate(-50%, -100%)",
+        transform: position.below ? "translate(-50%, 0)" : "translate(-50%, -100%)",
       }}
     >
+      {/* Arrow on top (when popup is below selection) */}
+      {position.below && (
+        <div className="flex justify-center">
+          <div className="w-2.5 h-2.5 bg-white border-l border-t border-neutral-200 transform rotate-45 mb-[-6px]" />
+        </div>
+      )}
       <div className="bg-white rounded-xl shadow-lg shadow-neutral-200/50 border border-neutral-200 p-1.5 min-w-[180px]">
         <p className="px-2 py-1 text-[11px] text-neutral-400 font-medium truncate max-w-[200px]">
           &quot;{selectedText.slice(0, 30)}{selectedText.length > 30 ? "…" : ""}&quot;
@@ -108,10 +125,12 @@ export function SelectionPopup({ containerRef, onAdd }: Props) {
           );
         })}
       </div>
-      {/* Arrow */}
-      <div className="flex justify-center">
-        <div className="w-2.5 h-2.5 bg-white border-r border-b border-neutral-200 transform rotate-45 -mt-[6px]" />
-      </div>
+      {/* Arrow on bottom (when popup is above selection) */}
+      {!position.below && (
+        <div className="flex justify-center">
+          <div className="w-2.5 h-2.5 bg-white border-r border-b border-neutral-200 transform rotate-45 -mt-[6px]" />
+        </div>
+      )}
     </div>
   );
 }
