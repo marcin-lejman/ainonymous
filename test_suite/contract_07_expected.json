@@ -1,0 +1,24 @@
+{
+  "contract_type": "Umowa o świadczenie usług IT",
+  "entities": [
+    {"text": "DataFlow Systems Sp. z o.o.", "type": "ORGANIZATION", "description": "firma zamawiającego"},
+    {"text": "ul. Pawia 5/3, 31-154 Kraków", "type": "LOCATION", "description": "adres siedziby zamawiającego"},
+    {"text": "0000678901", "type": "KRS", "description": "numer KRS zamawiającego"},
+    {"text": "0647468726", "type": "NIP", "description": "numer NIP zamawiającego"},
+    {"text": "951484651", "type": "REGON", "description": "numer REGON zamawiającego"},
+    {"text": "Martę Jabłońską", "type": "PERSON", "description": "Prezes Zarządu zamawiającego - imię i nazwisko w bierniku"},
+    {"text": "Krzysztofem Nowakiem", "type": "PERSON", "description": "wykonawca - imię i nazwisko w narzędniku"},
+    {"text": "os. Centrum B 7/22, 31-929 Kraków", "type": "LOCATION", "description": "adres zamieszkania wykonawcy"},
+    {"text": "84514627045", "type": "PESEL", "description": "numer PESEL wykonawcy"},
+    {"text": "KN Solutions Krzysztof Nowak", "type": "ORGANIZATION", "description": "nazwa działalności gospodarczej wykonawcy"},
+    {"text": "3430980505", "type": "NIP", "description": "numer NIP wykonawcy"},
+    {"text": "jedyny certyfikowany administrator Oracle w województwie małopolskim", "type": "CONTEXTUAL", "description": "opis kwalifikacji wykonawcy, umożliwiający jego identyfikację"},
+    {"text": "m.jablonska@dataflow-systems.pl", "type": "EMAIL_ADDRESS", "description": "adres e-mail osoby kontaktowej zamawiającego"},
+    {"text": "0048 512 345 678", "type": "PHONE_NUMBER", "description": "numer telefonu osoby kontaktowej zamawiającego"},
+    {"text": "krzysztof.nowak@knsolutions.com.pl", "type": "EMAIL_ADDRESS", "description": "adres e-mail wykonawcy"},
+    {"text": "0048 601 987 234", "type": "PHONE_NUMBER", "description": "numer telefonu wykonawcy"},
+    {"text": "support@dataflow-systems.pl", "type": "EMAIL_ADDRESS", "description": "adres e-mail do zgłoszeń awaryjnych"},
+    {"text": "Marta Jabłońska", "type": "PERSON", "description": "podpis - Prezes Zarządu zamawiającego"},
+    {"text": "Krzysztof Nowak", "type": "PERSON", "description": "podpis wykonawcy"}
+  ]
+}

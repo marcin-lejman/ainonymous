@@ -1,0 +1,26 @@
+{
+  "contract_type": "Umowa o zachowaniu poufności (NDA)",
+  "entities": [
+    {"text": "TechVenture Capital Sp. z o.o.", "type": "ORGANIZATION", "description": "firma strony ujawniającej"},
+    {"text": "Al. Jerozolimskie 142, 02-305 Warszawa", "type": "LOCATION", "description": "adres siedziby rejestrowej strony ujawniającej"},
+    {"text": "ul. Mokotowska 15/3, 00-640 Warszawa", "type": "LOCATION", "description": "adres korespondencyjny strony ujawniającej"},
+    {"text": "0000789012", "type": "KRS", "description": "numer KRS strony ujawniającej"},
+    {"text": "2191361938", "type": "NIP", "description": "numer NIP strony ujawniającej"},
+    {"text": "648236620", "type": "REGON", "description": "numer REGON strony ujawniającej"},
+    {"text": "Andrzeja Lewandowskiego", "type": "PERSON", "description": "Wiceprezes Zarządu strony ujawniającej - imię i nazwisko w dopełniaczu"},
+    {"text": "NovaSoft Engineering Sp. z o.o.", "type": "ORGANIZATION", "description": "firma strony otrzymującej"},
+    {"text": "ul. Puławska 303, 02-785 Warszawa", "type": "LOCATION", "description": "adres siedziby rejestrowej strony otrzymującej"},
+    {"text": "ul. Konstruktorska 8/24, 02-673 Warszawa", "type": "LOCATION", "description": "adres korespondencyjny strony otrzymującej"},
+    {"text": "0000890123", "type": "KRS", "description": "numer KRS strony otrzymującej"},
+    {"text": "9909169982", "type": "NIP", "description": "numer NIP strony otrzymującej"},
+    {"text": "994680440", "type": "REGON", "description": "numer REGON strony otrzymującej"},
+    {"text": "Katarzynę Wójcik", "type": "PERSON", "description": "Dyrektor Zarządzający strony otrzymującej - imię i nazwisko w bierniku"},
+    {"text": "dyrektor ds. rozwoju, który przeszedł z konkurencyjnej spółki w styczniu 2024", "type": "CONTEXTUAL", "description": "opis zawodowy osoby reprezentującej stronę otrzymującą, ujawniający historię zatrudnienia"},
+    {"text": "a.lewandowski@techventure.pl", "type": "EMAIL_ADDRESS", "description": "adres e-mail osoby kontaktowej strony ujawniającej"},
+    {"text": "+48 22 456 78 90", "type": "PHONE_NUMBER", "description": "numer telefonu osoby kontaktowej strony ujawniającej"},
+    {"text": "k.wojcik@novasoft-eng.pl", "type": "EMAIL_ADDRESS", "description": "adres e-mail osoby kontaktowej strony otrzymującej"},
+    {"text": "+48 22 789 01 23", "type": "PHONE_NUMBER", "description": "numer telefonu osoby kontaktowej strony otrzymującej"},
+    {"text": "Andrzej Lewandowski", "type": "PERSON", "description": "podpis Wiceprezesa Zarządu strony ujawniającej"},
+    {"text": "Katarzyna Wójcik", "type": "PERSON", "description": "podpis Dyrektora Zarządzającego strony otrzymującej"}
+  ]
+}

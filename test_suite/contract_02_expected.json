@@ -1,0 +1,17 @@
+{
+  "contract_type": "umowa sprzedaży nieruchomości",
+  "entities": [
+    {"text": "Heleną Majewską", "type": "PERSON", "description": "notary name in instrumental case"},
+    {"text": "Krakowie przy ul. Grodzkiej 42/3", "type": "LOCATION", "description": "notary office address"},
+    {"text": "Tomasz Andrzej Wiśniewski", "type": "PERSON", "description": "seller full name"},
+    {"text": "Krakowie, ul. Bracka 17 m. 4, 31-005 Kraków", "type": "LOCATION", "description": "seller home address"},
+    {"text": "10433218198", "type": "PESEL", "description": "seller PESEL number"},
+    {"text": "Magdalena Nowak-Brzezińska", "type": "PERSON", "description": "buyer full name"},
+    {"text": "Krakowie, ul. Karmelicka 56/22, 31-128 Kraków", "type": "LOCATION", "description": "buyer home address"},
+    {"text": "38637940262", "type": "PESEL", "description": "buyer PESEL number"},
+    {"text": "ul. Długiej 8 w Krakowie, 31-147 Kraków", "type": "LOCATION", "description": "property address being sold"},
+    {"text": "sąsiadkę z parteru, która od lat prowadzi kwiaciarnię", "type": "CONTEXTUAL", "description": "contextual identifier of person who recommended the property"},
+    {"text": "4738299734", "type": "NIP", "description": "NIP associated with the property from prior rental"},
+    {"text": "Helena Majewska", "type": "PERSON", "description": "notary signature"}
+  ]
+}

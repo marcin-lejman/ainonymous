@@ -1,0 +1,23 @@
+{
+  "contract_type": "umowa najmu mieszkania",
+  "entities": [
+    {"text": "DOMINIUM Nieruchomości Sp. z o.o.", "type": "ORGANIZATION", "description": "landlord company name"},
+    {"text": "ul. Świdnicka 34, 50-068 Wrocław", "type": "LOCATION", "description": "landlord company registered address"},
+    {"text": "7631165665", "type": "NIP", "description": "landlord company NIP"},
+    {"text": "850142940", "type": "REGON", "description": "landlord company REGON"},
+    {"text": "0000234567", "type": "KRS", "description": "landlord company KRS number"},
+    {"text": "Ewę Szymańską", "type": "PERSON", "description": "company representative in accusative case"},
+    {"text": "Jakubem Zielińskim", "type": "PERSON", "description": "tenant name in instrumental case"},
+    {"text": "ul. Powstańców Śląskich 102/7, 53-333 Wrocław", "type": "LOCATION", "description": "tenant home address"},
+    {"text": "54235116157", "type": "PESEL", "description": "tenant PESEL number"},
+    {"text": "+48 601 234 567", "type": "PHONE_NUMBER", "description": "tenant phone number"},
+    {"text": "j.zielinski@poczta.onet.pl", "type": "EMAIL_ADDRESS", "description": "tenant email address"},
+    {"text": "ul. Kościuszki 23 m. 15, 50-011 Wrocław", "type": "LOCATION", "description": "rented property address"},
+    {"text": "PL 27 1140 2004 0000 3002 0135 5387", "type": "IBAN_CODE", "description": "landlord bank account number"},
+    {"text": "48-601-234-567", "type": "PHONE_NUMBER", "description": "contact person phone number in dashed format"},
+    {"text": "córką właściciela, studentką prawa na UJ", "type": "CONTEXTUAL", "description": "contextual identifier describing contact person's relation and role"},
+    {"text": "najem@dominium-wroclaw.pl", "type": "EMAIL_ADDRESS", "description": "landlord company email"},
+    {"text": "Ewa Szymańska", "type": "PERSON", "description": "company representative signature"},
+    {"text": "Jakub Zieliński", "type": "PERSON", "description": "tenant signature"}
+  ]
+}

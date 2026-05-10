@@ -1,0 +1,22 @@
+{
+  "contract_type": "umowa zlecenie",
+  "entities": [
+    {"text": "Hansa Maritime Group S.A.", "type": "ORGANIZATION", "description": "principal company name"},
+    {"text": "Al. Grunwaldzka 411, 80-309 Gdańsk", "type": "LOCATION", "description": "principal company registered address"},
+    {"text": "1031051832", "type": "NIP", "description": "principal company NIP in plain format"},
+    {"text": "019655692", "type": "REGON", "description": "principal company REGON"},
+    {"text": "0000345678", "type": "KRS", "description": "principal company KRS number"},
+    {"text": "Marcina Lewandowskiego", "type": "PERSON", "description": "company representative in genitive case"},
+    {"text": "Stanisławem Wojciechowskim", "type": "PERSON", "description": "contractor name in instrumental case"},
+    {"text": "ul. Portowa 5/2, 81-350 Gdynia", "type": "LOCATION", "description": "contractor home address"},
+    {"text": "31647525531", "type": "PESEL", "description": "contractor PESEL (referenced as numer ewidencyjny)"},
+    {"text": "+48 58 620 11 47", "type": "PHONE_NUMBER", "description": "contractor phone number"},
+    {"text": "s.wojciechowski@hansa-maritime.pl", "type": "EMAIL_ADDRESS", "description": "contractor email address"},
+    {"text": "ul. Przemysłowa 12, 80-542 Gdańsk", "type": "LOCATION", "description": "warehouse location"},
+    {"text": "ul. Świętojańska 89/4, 81-391 Gdynia", "type": "LOCATION", "description": "operational office location"},
+    {"text": "ul. Kontenerowa 2, 81-154 Gdynia", "type": "LOCATION", "description": "cargo terminal location"},
+    {"text": "wieloletnim współpracownikiem prezesa, jedynym specjalistą ds. BHP w regionie", "type": "CONTEXTUAL", "description": "contextual identifier describing contractor's unique role and relationship"},
+    {"text": "Marcin Lewandowski", "type": "PERSON", "description": "company representative signature"},
+    {"text": "Stanisław Wojciechowski", "type": "PERSON", "description": "contractor signature"}
+  ]
+}

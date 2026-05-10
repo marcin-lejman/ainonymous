@@ -1,0 +1,16 @@
+{
+  "contract_type": "umowa o dzieło",
+  "entities": [
+    {"text": "Remigiusz Ostrowski", "type": "PERSON", "description": "ordering party (zamawiający)"},
+    {"text": "ul. Piotrkowska 178/3, 90-368 Łódź", "type": "LOCATION", "description": "ordering party address"},
+    {"text": "59407816183", "type": "PESEL", "description": "ordering party PESEL"},
+    {"text": "3872624730", "type": "NIP", "description": "ordering party NIP in plain format"},
+    {"text": "r.ostrowski@działalność-łódzka.pl", "type": "EMAIL_ADDRESS", "description": "ordering party email with Polish characters in domain"},
+    {"text": "Bartłomiej Kaczmarek", "type": "PERSON", "description": "contractor (wykonawca)"},
+    {"text": "os. Tysiąclecia 9/41, 61-255 Poznań", "type": "LOCATION", "description": "contractor address"},
+    {"text": "49593103413", "type": "PESEL", "description": "contractor PESEL"},
+    {"text": "178-108-01-34", "type": "NIP", "description": "contractor NIP in dashed format"},
+    {"text": "b.kaczmarek@twórczość-poznańska.pl", "type": "EMAIL_ADDRESS", "description": "contractor email with Polish characters in domain"},
+    {"text": "byłym wspólnikiem, obecnie prowadzącym konkurencyjną działalność w Łodzi", "type": "CONTEXTUAL", "description": "contextual identifier describing contractor's background and competing activity"}
+  ]
+}

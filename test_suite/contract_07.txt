@@ -1,0 +1,77 @@
+UMOWA O ŚWIADCZENIE USŁUG IT
+Nr 2025/IT/0041
+
+zawarta w dniu 7 stycznia 2025 roku w Krakowie
+
+pomiędzy:
+
+DataFlow Systems Sp. z o.o. z siedzibą w Krakowie, ul. Pawia 5/3, 31-154 Kraków,
+wpisaną do rejestru przedsiębiorców Krajowego Rejestru Sądowego pod numerem
+KRS 0000678901, NIP: 0647468726, REGON: 951484651,
+reprezentowaną przez Prezesa Zarządu - Martę Jabłońską,
+zwaną dalej "Zamawiającym",
+
+a
+
+Panem Krzysztofem Nowakiem, zamieszkałym w Krakowie, os. Centrum B 7/22,
+31-929 Kraków, PESEL: 84514627045,
+prowadzącym jednoosobową działalność gospodarczą pod firmą
+"KN Solutions Krzysztof Nowak", NIP: 3430980505,
+jedyny certyfikowany administrator Oracle w województwie małopolskim,
+zwanym dalej "Wykonawcą",
+
+o następującej treści:
+
+§ 1. Przedmiot umowy
+
+1. Zamawiający zleca, a Wykonawca zobowiązuje się do świadczenia usług w zakresie:
+   a) administracji bazami danych Oracle 19c oraz 21c,
+   b) monitoringu wydajności systemów produkcyjnych,
+   c) wdrożenia procedur backupu i disaster recovery,
+   d) wsparcia technicznego dla zespołu deweloperskiego Zamawiającego.
+
+§ 2. Czas trwania umowy
+
+1. Umowa zostaje zawarta na czas określony od dnia 1 lutego 2025 roku
+   do dnia 31 stycznia 2026 roku.
+2. Wykonawca zobowiązuje się do świadczenia usług w wymiarze minimum 120 godzin miesięcznie.
+
+§ 3. Wynagrodzenie
+
+1. Za świadczone usługi Wykonawca otrzyma wynagrodzenie w wysokości 180,00 zł netto
+   za każdą godzinę pracy (słownie: sto osiemdziesiąt złotych).
+2. Wynagrodzenie płatne na podstawie miesięcznej faktury VAT, w terminie 14 dni
+   od daty jej doręczenia.
+3. Faktury należy wystawiać na adres: DataFlow Systems Sp. z o.o.,
+   ul. Pawia 5/3, 31-154 Kraków.
+
+§ 4. Komunikacja
+
+1. Osobą kontaktową ze strony Zamawiającego jest Marta Jabłońska,
+   e-mail: m.jablonska@dataflow-systems.pl, tel.: 0048 512 345 678.
+2. Osobą kontaktową ze strony Wykonawcy jest Krzysztof Nowak,
+   e-mail: krzysztof.nowak@knsolutions.com.pl, tel.: 0048 601 987 234.
+3. Zgłoszenia awaryjne należy kierować na adres: support@dataflow-systems.pl.
+
+§ 5. Poufność
+
+1. Wykonawca zobowiązuje się do zachowania w tajemnicy wszelkich informacji
+   technicznych i handlowych uzyskanych w związku z realizacją niniejszej umowy.
+
+§ 6. Odpowiedzialność
+
+1. Wykonawca ponosi odpowiedzialność za szkody wyrządzone Zamawiającemu
+   wskutek niewykonania lub nienależytego wykonania umowy do wysokości
+   trzykrotności miesięcznego wynagrodzenia.
+
+§ 7. Postanowienia końcowe
+
+1. Wszelkie zmiany umowy wymagają formy pisemnej pod rygorem nieważności.
+2. Umowę sporządzono w dwóch jednobrzmiących egzemplarzach.
+
+
+________________________                    ________________________
+Zamawiający                                 Wykonawca
+Marta Jabłońska                             Krzysztof Nowak
+Prezes Zarządu                              KN Solutions
+DataFlow Systems Sp. z o.o.

@@ -1,0 +1,23 @@
+{
+  "contract_type": "Umowa pożyczki",
+  "entities": [
+    {"text": "Zbigniewem Kowalczykiem", "type": "PERSON", "description": "pożyczkodawca - imię i nazwisko w narzędniku"},
+    {"text": "Kraków, Mogilska 27/4", "type": "LOCATION", "description": "adres zamieszkania pożyczkodawcy"},
+    {"text": "38849696533", "type": "PESEL", "description": "numer PESEL pożyczkodawcy"},
+    {"text": "2677360265", "type": "NIP", "description": "numer NIP pożyczkodawcy"},
+    {"text": "Kowalczyk Serwis", "type": "ORGANIZATION", "description": "nazwa jednoosobowej działalności gospodarczej pożyczkodawcy"},
+    {"text": "Joanną Wiśniewską", "type": "PERSON", "description": "pożyczkobiorca - imię i nazwisko w narzędniku"},
+    {"text": "Kraków, Dietla 89/12", "type": "LOCATION", "description": "adres zamieszkania pożyczkobiorcy"},
+    {"text": "28710122698", "type": "PESEL", "description": "numer PESEL pożyczkobiorcy"},
+    {"text": "PL 61 1090 1014 0000 0712 1981 2874", "type": "IBAN_CODE", "description": "numer rachunku bankowego pożyczkobiorcy"},
+    {"text": "PL 83 1050 1025 1000 0091 4520 6738", "type": "IBAN_CODE", "description": "numer rachunku bankowego pożyczkodawcy"},
+    {"text": "Adama Wiśniewskiego", "type": "PERSON", "description": "poręczyciel pożyczki - imię i nazwisko"},
+    {"text": "brat pożyczkobiorcy, który poręczył wcześniejszą pożyczkę", "type": "CONTEXTUAL", "description": "opis relacji poręczyciela z pożyczkobiorcą, ujawniający powiązanie rodzinne"},
+    {"text": "Kraków, Dietla 89/14", "type": "LOCATION", "description": "adres zamieszkania poręczyciela"},
+    {"text": "16697848014", "type": "PESEL", "description": "numer PESEL poręczyciela"},
+    {"text": "z.kowalczyk@kowalczykserwis.pl", "type": "EMAIL_ADDRESS", "description": "adres e-mail pożyczkodawcy"},
+    {"text": "12 634 22 87", "type": "PHONE_NUMBER", "description": "numer telefonu kontaktowego pożyczkodawcy"},
+    {"text": "Zbigniew Kowalczyk", "type": "PERSON", "description": "podpis pożyczkodawcy"},
+    {"text": "Joanna Wiśniewska", "type": "PERSON", "description": "podpis pożyczkobiorcy"}
+  ]
+}

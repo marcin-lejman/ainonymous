@@ -1,0 +1,18 @@
+{
+  "contract_type": "Pełnomocnictwo",
+  "entities": [
+    {"text": "Elżbietą Kamińską", "type": "PERSON", "description": "notariusz sporządzająca akt - imię i nazwisko w narzędniku"},
+    {"text": "ul. Długiej 47/3, 80-827 Gdańsk", "type": "LOCATION", "description": "adres kancelarii notarialnej"},
+    {"text": "Ryszard Tomasz Szymański", "type": "PERSON", "description": "mocodawca - pełne imiona i nazwisko"},
+    {"text": "ul. Oliwska 18/2, 80-563 Gdańsk", "type": "LOCATION", "description": "adres zamieszkania mocodawcy"},
+    {"text": "43039117183", "type": "PESEL", "description": "numer PESEL mocodawcy"},
+    {"text": "Barbarze Annie Szymańskiej", "type": "PERSON", "description": "pełnomocnik - imiona i nazwisko w celowniku"},
+    {"text": "ul. Oliwska 18/4, 80-563 Gdańsk", "type": "LOCATION", "description": "adres zamieszkania pełnomocnika"},
+    {"text": "22782489635", "type": "PESEL", "description": "numer PESEL pełnomocnika"},
+    {"text": "siostra mocodawcy zamieszkała w tym samym budynku, opiekująca się jego dziećmi", "type": "CONTEXTUAL", "description": "opis relacji rodzinnej pełnomocnika z mocodawcą, ujawniający powiązanie i sytuację rodzinną"},
+    {"text": "ul. Oliwskiej 18, 80-563 Gdańsk", "type": "LOCATION", "description": "adres nieruchomości będącej przedmiotem pełnomocnictwa"},
+    {"text": "Ryszard Tomasz Szymański", "type": "PERSON", "description": "podpis mocodawcy"},
+    {"text": "Barbara Anna Szymańska", "type": "PERSON", "description": "podpis pełnomocnika"},
+    {"text": "Elżbieta Kamińska", "type": "PERSON", "description": "podpis notariusza"}
+  ]
+}

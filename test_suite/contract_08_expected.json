@@ -1,0 +1,18 @@
+{
+  "contract_type": "Umowa darowizny",
+  "entities": [
+    {"text": "Tomasza Zielińskiego", "type": "PERSON", "description": "notariusz sporządzający akt - imię i nazwisko w dopełniaczu"},
+    {"text": "ul. Szewskiej 14, 31-009 Kraków", "type": "LOCATION", "description": "adres kancelarii notarialnej"},
+    {"text": "Helena Majewska", "type": "PERSON", "description": "darczyńca - imię i nazwisko"},
+    {"text": "ul. Lipowa 32/1, 30-702 Kraków", "type": "LOCATION", "description": "adres zamieszkania darczyńcy"},
+    {"text": "82814893256", "type": "PESEL", "description": "numer PESEL darczyńcy"},
+    {"text": "Michał Majewski", "type": "PERSON", "description": "obdarowany - imię i nazwisko"},
+    {"text": "ul. Starowiślna 58/7, 31-038 Kraków", "type": "LOCATION", "description": "adres zamieszkania obdarowanego"},
+    {"text": "28809570159", "type": "PESEL", "description": "numer PESEL obdarowanego"},
+    {"text": "ul. Lipowa 32, 30-702 Kraków", "type": "LOCATION", "description": "adres nieruchomości będącej przedmiotem darowizny"},
+    {"text": "najstarsza wnuczka darczyńcy, jedyna spadkobierczyni nieruchomości przy ul. Lipowej", "type": "CONTEXTUAL", "description": "opis osoby trzeciej ujawniający relację rodzinną i prawa spadkowe"},
+    {"text": "Aleksandra Majewska", "type": "PERSON", "description": "wnuczka darczyńcy posiadająca prawo dożywotniego zamieszkiwania"},
+    {"text": "ul. Lipowa 32/5, 30-702 Kraków", "type": "LOCATION", "description": "adres zamieszkania wnuczki darczyńcy"},
+    {"text": "Tomasz Zieliński", "type": "PERSON", "description": "podpis notariusza"}
+  ]
+}

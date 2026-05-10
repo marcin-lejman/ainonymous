@@ -1,0 +1,20 @@
+{
+  "contract_type": "umowa o pracę",
+  "entities": [
+    {"text": "NEXUS Technology Sp. z o.o.", "type": "ORGANIZATION", "description": "employer company name"},
+    {"text": "Warszawie, ul. Marszałkowska 89/12, 00-693 Warszawa", "type": "LOCATION", "description": "employer registered address"},
+    {"text": "0000123456", "type": "KRS", "description": "employer KRS number"},
+    {"text": "103-105-18-32", "type": "NIP", "description": "employer NIP number in dashed format"},
+    {"text": "654145864", "type": "REGON", "description": "employer REGON number"},
+    {"text": "Krzysztofa Walczaka", "type": "PERSON", "description": "company representative, CEO"},
+    {"text": "Agnieszką Kowalską", "type": "PERSON", "description": "employee name in instrumental case"},
+    {"text": "Warszawie przy ul. Złotej 15 m. 7, 00-019 Warszawa", "type": "LOCATION", "description": "employee home address"},
+    {"text": "60013389082", "type": "PESEL", "description": "employee PESEL number"},
+    {"text": "jedynym informatykiem w dziale kadr", "type": "CONTEXTUAL", "description": "contextual identifier describing employee's unique role"},
+    {"text": "a.kowalska@nexus-tech.pl", "type": "EMAIL_ADDRESS", "description": "employee work email"},
+    {"text": "+48 512 443 890", "type": "PHONE_NUMBER", "description": "employee phone number"},
+    {"text": "hr@nexus-tech.pl", "type": "EMAIL_ADDRESS", "description": "HR department email"},
+    {"text": "Krzysztof Walczak", "type": "PERSON", "description": "company representative signature"},
+    {"text": "Agnieszka Kowalska", "type": "PERSON", "description": "employee signature"}
+  ]
+}

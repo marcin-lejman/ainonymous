@@ -1,0 +1,86 @@
+UMOWA O ZACHOWANIU POUFNOŚCI (NDA)
+Nr NDA/2025/003
+
+zawarta w dniu 3 lutego 2025 roku w Warszawie
+
+pomiędzy:
+
+TechVenture Capital Sp. z o.o. z siedzibą w Warszawie,
+adres siedziby (rejestrowy): Al. Jerozolimskie 142, 02-305 Warszawa,
+adres do korespondencji: ul. Mokotowska 15/3, 00-640 Warszawa,
+wpisaną do rejestru przedsiębiorców KRS pod numerem KRS 0000789012,
+NIP: 2191361938, REGON: 648236620,
+reprezentowaną przez Wiceprezesa Zarządu - Pana Andrzeja Lewandowskiego,
+zwaną dalej "Stroną Ujawniającą",
+
+a
+
+NovaSoft Engineering Sp. z o.o. z siedzibą w Warszawie,
+adres siedziby (rejestrowy): ul. Puławska 303, 02-785 Warszawa,
+adres do korespondencji: ul. Konstruktorska 8/24, 02-673 Warszawa,
+wpisaną do rejestru przedsiębiorców KRS pod numerem KRS 0000890123,
+NIP: 9909169982, REGON: 994680440,
+reprezentowaną przez Dyrektora Zarządzającego - Panią Katarzynę Wójcik,
+dyrektor ds. rozwoju, który przeszedł z konkurencyjnej spółki w styczniu 2024,
+zwaną dalej "Stroną Otrzymującą",
+
+łącznie zwanymi "Stronami",
+
+o następującej treści:
+
+§ 1. Definicje
+
+1. "Informacje Poufne" oznaczają wszelkie informacje techniczne, handlowe,
+   finansowe, organizacyjne oraz inne informacje posiadające wartość gospodarczą,
+   przekazane przez Stronę Ujawniającą Stronie Otrzymującej w związku z prowadzonymi
+   rozmowami dotyczącymi potencjalnej współpracy w zakresie projektu "Omega".
+
+§ 2. Zobowiązanie do poufności
+
+1. Strona Otrzymująca zobowiązuje się do:
+   a) zachowania Informacji Poufnych w ścisłej tajemnicy,
+   b) nieujawniania Informacji Poufnych osobom trzecim bez uprzedniej
+      pisemnej zgody Strony Ujawniającej,
+   c) wykorzystywania Informacji Poufnych wyłącznie w celu oceny możliwości
+      nawiązania współpracy pomiędzy Stronami.
+
+§ 3. Wyjątki
+
+1. Zobowiązanie do poufności nie obejmuje informacji, które:
+   a) są lub staną się publicznie dostępne bez naruszenia niniejszej umowy,
+   b) były znane Stronie Otrzymującej przed ich ujawnieniem,
+   c) zostały uzyskane od osoby trzeciej bez naruszenia zobowiązania do poufności.
+
+§ 4. Okres obowiązywania
+
+1. Niniejsza umowa obowiązuje przez okres 3 lat od daty jej podpisania.
+2. Zobowiązanie do poufności obowiązuje również przez okres 2 lat
+   po wygaśnięciu lub rozwiązaniu niniejszej umowy.
+
+§ 5. Kary umowne
+
+1. W przypadku naruszenia zobowiązań wynikających z niniejszej umowy,
+   Strona naruszająca zapłaci karę umowną w wysokości 500 000,00 zł.
+2. Zapłata kary umownej nie wyłącza prawa do dochodzenia odszkodowania
+   przewyższającego wysokość kary umownej.
+
+§ 6. Osoby kontaktowe
+
+1. Ze strony Strony Ujawniającej: Andrzej Lewandowski,
+   e-mail: a.lewandowski@techventure.pl, tel.: +48 22 456 78 90.
+2. Ze strony Strony Otrzymującej: Katarzyna Wójcik,
+   e-mail: k.wojcik@novasoft-eng.pl, tel.: +48 22 789 01 23.
+
+§ 7. Postanowienia końcowe
+
+1. Wszelkie spory wynikające z niniejszej umowy rozstrzygane będą przez sąd
+   właściwy dla siedziby Strony Ujawniającej.
+2. Umowę sporządzono w dwóch jednobrzmiących egzemplarzach, po jednym
+   dla każdej ze Stron.
+
+
+________________________                    ________________________
+Strona Ujawniająca                          Strona Otrzymująca
+Andrzej Lewandowski                         Katarzyna Wójcik
+Wiceprezes Zarządu                          Dyrektor Zarządzający
+TechVenture Capital Sp. z o.o.              NovaSoft Engineering Sp. z o.o.
