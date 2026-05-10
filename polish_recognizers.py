@@ -152,8 +152,8 @@ class RegonRecognizer(PatternRecognizer):
             context=["regon"],
         )
 
-    def validate_result(self, pattern_text):
-        digits = pattern_text
+    @staticmethod
+    def _checksum_valid(digits):
         if len(digits) == 9:
             weights = [8, 9, 2, 3, 4, 5, 6, 7]
             checksum = sum(int(d) * w for d, w in zip(digits[:8], weights)) % 11
@@ -165,6 +165,40 @@ class RegonRecognizer(PatternRecognizer):
             checksum = checksum if checksum != 10 else 0
             return checksum == int(digits[13])
         return False
+
+    def analyze(self, text, entities, nlp_artifacts=None):
+        results = super().analyze(text, entities, nlp_artifacts)
+
+        import re
+        text_lower = text.lower()
+        for m in re.finditer(r"\b\d{9}\b", text):
+            digits = m.group()
+            if self._checksum_valid(digits):
+                continue
+            window_start = max(0, m.start() - 30)
+            window = text_lower[window_start:m.start()]
+            if "regon" in window:
+                explanation = AnalysisExplanation(
+                    recognizer=self.__class__.__name__,
+                    original_score=0.75,
+                    pattern_name="regon_context_fallback",
+                    pattern=r"\b\d{9}\b",
+                    validation_result=0.75,
+                )
+                results.append(RecognizerResult(
+                    entity_type="REGON",
+                    start=m.start(),
+                    end=m.end(),
+                    score=0.75,
+                    analysis_explanation=explanation,
+                ))
+
+        return results
+
+    def validate_result(self, pattern_text):
+        if not pattern_text.isdigit():
+            return False
+        return self._checksum_valid(pattern_text)
 
 
 class KrsRecognizer(PatternRecognizer):
