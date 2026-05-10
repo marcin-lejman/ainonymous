@@ -1,8 +1,13 @@
 from presidio_analyzer import Pattern, PatternRecognizer, RecognizerResult
+from presidio_analyzer import AnalysisExplanation
 from presidio_analyzer.nlp_engine import NlpArtifacts
 
 
 class PeselRecognizer(PatternRecognizer):
+    """Recognizes Polish PESEL numbers.
+    Valid checksum: detected at score 0.4 (boosted by context).
+    Invalid checksum: still detected if context word "PESEL" is nearby.
+    """
     PATTERNS = [
         Pattern(
             name="pesel_pattern",
@@ -19,13 +24,49 @@ class PeselRecognizer(PatternRecognizer):
             context=["pesel", "nr ewidencyjny", "numer ewidencyjny"],
         )
 
+    @staticmethod
+    def _checksum_valid(digits):
+        weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3]
+        checksum = sum(int(d) * w for d, w in zip(digits[:10], weights)) % 10
+        checksum = (10 - checksum) % 10
+        return checksum == int(digits[10])
+
+    def analyze(self, text, entities, nlp_artifacts=None):
+        """Override analyze to also catch invalid-checksum PESELs near the word PESEL."""
+        results = super().analyze(text, entities, nlp_artifacts)
+
+        # Second pass: find 11-digit numbers near "PESEL" that failed checksum
+        import re
+        text_lower = text.lower()
+        for m in re.finditer(r"\b\d{11}\b", text):
+            digits = m.group()
+            if self._checksum_valid(digits):
+                continue  # already caught by the normal pattern
+            # Check if "pesel" appears within 50 chars before this number
+            window_start = max(0, m.start() - 50)
+            window = text_lower[window_start:m.start()]
+            if "pesel" in window or "ewidencyjny" in window:
+                explanation = AnalysisExplanation(
+                    recognizer=self.__class__.__name__,
+                    original_score=0.75,
+                    pattern_name="pesel_context_fallback",
+                    pattern=r"\b\d{11}\b",
+                    validation_result=0.75,
+                )
+                results.append(RecognizerResult(
+                    entity_type="PESEL",
+                    start=m.start(),
+                    end=m.end(),
+                    score=0.75,
+                    analysis_explanation=explanation,
+                ))
+
+        return results
+
     def validate_result(self, pattern_text):
         if len(pattern_text) != 11 or not pattern_text.isdigit():
             return False
-        weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3]
-        checksum = sum(int(d) * w for d, w in zip(pattern_text[:10], weights)) % 10
-        checksum = (10 - checksum) % 10
-        return checksum == int(pattern_text[10])
+        return self._checksum_valid(pattern_text)
 
 
 class NipRecognizer(PatternRecognizer):
@@ -42,23 +83,59 @@ class NipRecognizer(PatternRecognizer):
         ),
     ]
 
+    NIP_CONTEXT = ["nip", "numer identyfikacji podatkowej", "identyfikacji podatkowej"]
+
     def __init__(self):
         super().__init__(
             supported_entity="NIP",
             patterns=self.PATTERNS,
             supported_language="pl",
-            context=["nip", "numer identyfikacji podatkowej", "identyfikacji podatkowej"],
+            context=self.NIP_CONTEXT,
         )
 
-    def validate_result(self, pattern_text):
-        digits = "".join(c for c in pattern_text if c.isdigit())
-        if len(digits) != 10:
-            return False
+    @staticmethod
+    def _checksum_valid(digits):
         weights = [6, 5, 7, 2, 3, 4, 5, 6, 7]
         checksum = sum(int(d) * w for d, w in zip(digits[:9], weights)) % 11
         if checksum == 10:
             return False
         return checksum == int(digits[9])
+
+    def analyze(self, text, entities, nlp_artifacts=None):
+        results = super().analyze(text, entities, nlp_artifacts)
+
+        # Catch dashed NIP-format numbers near "NIP" even with invalid checksum
+        import re
+        text_lower = text.lower()
+        for m in re.finditer(r"\b\d{3}-\d{3}-\d{2}-\d{2}\b", text):
+            digits = "".join(c for c in m.group() if c.isdigit())
+            if self._checksum_valid(digits):
+                continue  # already caught
+            window_start = max(0, m.start() - 30)
+            window = text_lower[window_start:m.start()]
+            if "nip" in window:
+                explanation = AnalysisExplanation(
+                    recognizer=self.__class__.__name__,
+                    original_score=0.75,
+                    pattern_name="nip_context_fallback",
+                    pattern=r"\b\d{3}-\d{3}-\d{2}-\d{2}\b",
+                    validation_result=0.75,
+                )
+                results.append(RecognizerResult(
+                    entity_type="NIP",
+                    start=m.start(),
+                    end=m.end(),
+                    score=0.75,
+                    analysis_explanation=explanation,
+                ))
+
+        return results
+
+    def validate_result(self, pattern_text):
+        digits = "".join(c for c in pattern_text if c.isdigit())
+        if len(digits) != 10:
+            return False
+        return self._checksum_valid(digits)
 
 
 class RegonRecognizer(PatternRecognizer):
