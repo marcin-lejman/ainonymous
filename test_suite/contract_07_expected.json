@@ -8,7 +8,7 @@
     {"text": "951484651", "type": "REGON", "description": "numer REGON zamawiającego"},
     {"text": "Martę Jabłońską", "type": "PERSON", "description": "Prezes Zarządu zamawiającego - imię i nazwisko w bierniku"},
     {"text": "Krzysztofem Nowakiem", "type": "PERSON", "description": "wykonawca - imię i nazwisko w narzędniku"},
-    {"text": "os. Centrum B 7/22, 31-929 Kraków", "type": "LOCATION", "description": "adres zamieszkania wykonawcy"},
+    {"text": "os. Centrum B 7/22,\n31-929 Kraków", "type": "LOCATION", "description": "adres zamieszkania wykonawcy"},
     {"text": "84514627045", "type": "PESEL", "description": "numer PESEL wykonawcy"},
     {"text": "KN Solutions Krzysztof Nowak", "type": "ORGANIZATION", "description": "nazwa działalności gospodarczej wykonawcy"},
     {"text": "3430980505", "type": "NIP", "description": "numer NIP wykonawcy"},

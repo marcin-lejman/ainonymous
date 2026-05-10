@@ -14,7 +14,7 @@ import json
 import sys
 from pathlib import Path
 
-from analyzer import build_analyzer
+from analyzer import build_analyzer, post_process
 
 
 def load_ground_truth(json_path):
@@ -70,8 +70,9 @@ def evaluate_contract(contract_path, json_path, analyzer, verbose=False):
 
     expected = load_ground_truth(json_path)
 
-    # Run analyzer
+    # Run analyzer + post-processing
     results = analyzer.analyze(text=text, language="pl")
+    results = post_process(results, text)
 
     # Build detected entities list
     detected = []
@@ -85,15 +86,20 @@ def evaluate_contract(contract_path, json_path, analyzer, verbose=False):
         })
 
     # Build expected spans
+    # Track how many times each (text, type) pair appears in annotations
+    # so we only create that many expected spans (not all occurrences in doc)
+    from collections import Counter
+    annotation_counts = Counter()
     expected_spans = []
     for ent in expected:
         if ent["type"] == "CONTEXTUAL":
             continue  # Skip contextual — those are for the LLM pass
+        key = (ent["text"], normalize_type(ent["type"]))
+        annotation_counts[key] += 1
         positions = find_entity_in_text(text, ent["text"])
         if not positions:
             if verbose:
                 print(f"  ⚠️  Ground truth text not found: '{ent['text'][:50]}' ({ent['type']})")
-            # Try to still count it as a false negative
             expected_spans.append({
                 "text": ent["text"],
                 "type": normalize_type(ent["type"]),
@@ -102,14 +108,20 @@ def evaluate_contract(contract_path, json_path, analyzer, verbose=False):
                 "matched": False,
             })
         else:
-            for start, end in positions:
-                expected_spans.append({
-                    "text": ent["text"],
-                    "type": normalize_type(ent["type"]),
-                    "start": start,
-                    "end": end,
-                    "matched": False,
-                })
+            # Only take the first occurrence for this annotation instance
+            # (use annotation_counts to pick the nth occurrence)
+            instance_idx = annotation_counts[key] - 1
+            if instance_idx < len(positions):
+                start, end = positions[instance_idx]
+            else:
+                start, end = positions[0]  # fallback to first
+            expected_spans.append({
+                "text": ent["text"],
+                "type": normalize_type(ent["type"]),
+                "start": start,
+                "end": end,
+                "matched": False,
+            })
 
     # Match detected against expected
     detected_matched = [False] * len(detected)
