@@ -307,11 +307,20 @@ def llm_pass_streaming(case_id: str):
 
             prompt_text = get_prompt(settings)
             full_prompt = build_full_prompt(prompt_text, doc_text)
+            print(f"[LLM] Prompt length: {len(full_prompt)} chars")
+            print(f"[LLM] Prompt starts with: {full_prompt[:200]}")
+            print(f"[LLM] Prompt ends with: {full_prompt[-100:]}")
+            print(f"[LLM] Settings llm_prompt present: {'llm_prompt' in settings}")
+            # Use /api/chat with system+user roles for better instruction following
+            document_msg = f"<document>\n{doc_text}\n</document>"
             resp = req.post(
-                f"{base_url}/api/generate",
+                f"{base_url}/api/chat",
                 json={
                     "model": selected_model,
-                    "prompt": full_prompt,
+                    "messages": [
+                        {"role": "system", "content": prompt_text},
+                        {"role": "user", "content": document_msg},
+                    ],
                     "stream": True,
                     "options": {"temperature": 0.1},
                 },
@@ -326,7 +335,9 @@ def llm_pass_streaming(case_id: str):
                 if not line:
                     continue
                 chunk = json.loads(line)
-                token = chunk.get("response", "")
+                # /api/chat returns message.content, /api/generate returns response
+                msg = chunk.get("message", {})
+                token = msg.get("content", "") or chunk.get("response", "")
                 raw_parts.append(token)
                 token_count += 1
                 if token_count % 10 == 0:

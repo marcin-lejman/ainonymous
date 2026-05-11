@@ -80,12 +80,16 @@ def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct
     if on_progress:
         on_progress("loading", 0)
 
-    # Use streaming to report progress
+    # Use /api/chat with system+user roles for better instruction following
+    document_msg = f"<document>\n{text}\n</document>"
     response = requests.post(
-        f"{base_url}/api/generate",
+        f"{base_url}/api/chat",
         json={
             "model": model,
-            "prompt": full_prompt,
+            "messages": [
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": document_msg},
+            ],
             "stream": True,
             "options": {"temperature": 0.1},
         },
@@ -100,7 +104,8 @@ def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct
         if not line:
             continue
         chunk = json.loads(line)
-        token = chunk.get("response", "")
+        msg = chunk.get("message", {})
+        token = msg.get("content", "") or chunk.get("response", "")
         raw_parts.append(token)
         token_count += 1
         if on_progress and token_count % 5 == 0:
