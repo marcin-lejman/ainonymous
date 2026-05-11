@@ -214,13 +214,26 @@ class PolishIbanRecognizer(PatternRecognizer):
 
 class PolishPhoneRecognizer(PatternRecognizer):
     PATTERNS = [
+        # +48 or 0048 followed by 9 digits in groups
         Pattern(
             name="pl_phone_intl",
             regex=r"(?:\+48|0048)\s?\d{2,3}[\s-]?\d{3}[\s-]?\d{2,3}[\s-]?\d{0,2}\b",
             score=0.5,
         ),
+        # 48-601-234-567
         Pattern(name="pl_phone_dashed", regex=r"\b48-\d{3}-\d{3}-\d{3}\b", score=0.6),
+        # Landline: 12 634 22 87
         Pattern(name="pl_phone_landline", regex=r"\b\d{2}\s\d{3}\s\d{2}\s\d{2}\b", score=0.3),
+        # Mobile no country code: 601 234 567
+        Pattern(name="pl_phone_mobile_9", regex=r"\b[4-9]\d{2}\s\d{3}\s\d{3}\b", score=0.3),
+        # Mobile compact: 601234567
+        Pattern(name="pl_phone_mobile_compact", regex=r"\b[4-9]\d{8}\b", score=0.2),
+        # With parens: (12) 345 67 89
+        Pattern(name="pl_phone_parens", regex=r"\(\d{2}\)\s?\d{3}\s?\d{2}\s?\d{2}", score=0.4),
+        # Dashed 9-digit: 601-234-567
+        Pattern(name="pl_phone_dashed_9", regex=r"\b[4-9]\d{2}-\d{3}-\d{3}\b", score=0.4),
+        # Dashed landline: 12-345-67-89
+        Pattern(name="pl_phone_dashed_landline", regex=r"\b\d{2}-\d{3}-\d{2}-\d{2}\b", score=0.3),
     ]
 
     def __init__(self):
@@ -231,5 +244,6 @@ class PolishPhoneRecognizer(PatternRecognizer):
             context=[
                 "tel", "tel.", "telefon", "telefonu", "telefoniczn",
                 "kontakt", "mobile", "komórk", "numer telefonu",
+                "fax", "faks",
             ],
         )

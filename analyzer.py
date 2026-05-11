@@ -125,34 +125,49 @@ def _extend_locations_with_numbers(results, text):
     return extended
 
 
-def _merge_adjacent_orgs(results, text):
-    """Merge adjacent ORGANIZATION entities separated only by whitespace."""
+def _merge_entity_sequences(results, text):
+    """Merge adjacent ORG/PERSON entities that form a single company or firm name."""
     from presidio_analyzer import RecognizerResult
-    orgs = [r for r in results if r.entity_type == "ORGANIZATION"]
-    others = [r for r in results if r.entity_type != "ORGANIZATION"]
-    if len(orgs) <= 1:
+    mergeable_types = {"ORGANIZATION", "PERSON"}
+    candidates = [r for r in results if r.entity_type in mergeable_types]
+    others = [r for r in results if r.entity_type not in mergeable_types]
+    if len(candidates) <= 1:
         return results
-    orgs.sort(key=lambda r: r.start)
-    merged = [orgs[0]]
-    for curr in orgs[1:]:
-        prev = merged[-1]
-        gap = text[prev.end:curr.start]
-        if len(gap) <= 3 and gap.strip() == "":
-            merged[-1] = RecognizerResult(
-                entity_type="ORGANIZATION",
-                start=prev.start,
-                end=curr.end,
-                score=max(prev.score, curr.score),
-                analysis_explanation=prev.analysis_explanation,
-            )
+    candidates.sort(key=lambda r: r.start)
+    sequences: list[list] = [[candidates[0]]]
+    for curr in candidates[1:]:
+        prev = sequences[-1][-1]
+        gap = text[prev.end:curr.start].strip()
+        if len(text[prev.end:curr.start]) <= 5 and (gap == "" or gap in ("i", "-", "&", "·")):
+            sequences[-1].append(curr)
         else:
-            merged.append(curr)
-    return others + merged
+            sequences.append([curr])
+    merged_results = []
+    absorbed = set()
+    for seq in sequences:
+        if len(seq) == 1:
+            merged_results.append(seq[0])
+            continue
+        has_org = any(r.entity_type == "ORGANIZATION" for r in seq)
+        if has_org:
+            merged_results.append(RecognizerResult(
+                entity_type="ORGANIZATION",
+                start=seq[0].start,
+                end=seq[-1].end,
+                score=max(r.score for r in seq),
+                analysis_explanation=seq[0].analysis_explanation,
+            ))
+            for r in seq:
+                if r.entity_type == "PERSON":
+                    absorbed.add((r.start, r.end))
+        else:
+            merged_results.extend(seq)
+    return [r for r in others if (r.start, r.end) not in absorbed] + merged_results
 
 
 def post_process(results, text):
     """Filter and resolve collisions in analyzer results."""
-    results = _merge_adjacent_orgs(results, text)
+    results = _merge_entity_sequences(results, text)
     results = _extend_locations_with_numbers(results, text)
     filtered = []
 

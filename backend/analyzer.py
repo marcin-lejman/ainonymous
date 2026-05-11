@@ -124,47 +124,115 @@ def _extend_locations_with_numbers(results, text):
     return extended
 
 
-def _merge_adjacent_orgs(results, text):
-    """Merge ORGANIZATION entities that are adjacent or separated only by whitespace.
+def _merge_entity_sequences(results, text):
+    """Merge adjacent ORG/PERSON entities that form a single company or firm name.
 
-    spaCy often splits 'ByteForge Sp.' and 'z o.o.' into two entities.
-    This merges them into one.
+    Handles cases like:
+    - "ByteForge Sp." (ORG) + "z o.o." (ORG) → one ORG
+    - "Kancelaria" (ORG) + "Kosowicz" (PERSON) + "i" + "Piechota-Młot" (PERSON) +
+      "spółka cywilna" (ORG) → one ORG
+
+    Strategy: sort all ORG and PERSON entities by position, then merge sequences
+    where entities are separated by short gaps (whitespace, "i", connectors).
+    A sequence becomes ORG if it contains at least one ORG entity.
     """
     from presidio_analyzer import RecognizerResult
-    orgs = [r for r in results if r.entity_type == "ORGANIZATION"]
-    others = [r for r in results if r.entity_type != "ORGANIZATION"]
+    import re
 
-    if len(orgs) <= 1:
+    mergeable_types = {"ORGANIZATION", "PERSON"}
+    candidates = [r for r in results if r.entity_type in mergeable_types]
+    others = [r for r in results if r.entity_type not in mergeable_types]
+
+    if len(candidates) <= 1:
         return results
 
-    orgs.sort(key=lambda r: r.start)
-    merged = [orgs[0]]
+    candidates.sort(key=lambda r: r.start)
 
-    for curr in orgs[1:]:
-        prev = merged[-1]
-        gap = text[prev.end:curr.start]
-        # Merge if gap is only whitespace (up to 3 chars)
-        if len(gap) <= 3 and gap.strip() == "":
-            merged[-1] = RecognizerResult(
+    # Build sequences of adjacent entities
+    sequences: list[list] = [[candidates[0]]]
+
+    for curr in candidates[1:]:
+        prev = sequences[-1][-1]
+        raw_gap = text[prev.end:curr.start]
+        gap = raw_gap.strip()
+
+        # Same-type merging: ORG+ORG with whitespace gap (e.g. "Sp." + "z o.o.")
+        if prev.entity_type == "ORGANIZATION" and curr.entity_type == "ORGANIZATION":
+            if len(raw_gap) <= 3 and (gap == "" or gap in ("i", "-", "&", "·")):
+                sequences[-1].append(curr)
+                continue
+
+        # Cross-type merging: ORG+PERSON or PERSON+ORG only with "i" or "&" connector
+        # (e.g. "Kosowicz i Piechota" in a firm name)
+        # NOT "-" which is commonly used as em dash separator ("Zarządu - Martę")
+        if prev.entity_type != curr.entity_type:
+            if gap in ("i", "&") and "-" not in raw_gap:
+                sequences[-1].append(curr)
+                continue
+
+        # PERSON+PERSON with "i" (co-founders: "Kosowicz i Piechota")
+        if prev.entity_type == "PERSON" and curr.entity_type == "PERSON":
+            if gap == "i":
+                sequences[-1].append(curr)
+                continue
+
+        sequences.append([curr])
+
+    merged_results = []
+    absorbed = set()  # track IDs of entities absorbed into merges
+
+    for seq in sequences:
+        if len(seq) == 1:
+            merged_results.append(seq[0])
+            continue
+
+        has_org = any(r.entity_type == "ORGANIZATION" for r in seq)
+
+        if has_org:
+            # Merge entire sequence into one ORG
+            merged_results.append(RecognizerResult(
                 entity_type="ORGANIZATION",
-                start=prev.start,
-                end=curr.end,
-                score=max(prev.score, curr.score),
-                analysis_explanation=prev.analysis_explanation,
-            )
+                start=seq[0].start,
+                end=seq[-1].end,
+                score=max(r.score for r in seq),
+                analysis_explanation=seq[0].analysis_explanation,
+            ))
+            # Mark all PERSON entities in this sequence as absorbed
+            for r in seq:
+                if r.entity_type == "PERSON":
+                    absorbed.add((r.start, r.end))
         else:
-            merged.append(curr)
+            # All PERSON — keep individually
+            merged_results.extend(seq)
 
-    return others + merged
+    # Extend merged ORGs to absorb trailing company suffixes and hyphenated names
+    import re
+    company_suffix = re.compile(
+        r"[-\w]*\s*(?:spółka\s+cywilna|sp(?:ółka)?\.?\s*(?:z\s*o\.?\s*o\.?|j\.|k\.|p\.)|"
+        r"s\.?\s*c\.?|S\.?\s*A\.?|sp(?:ółka)?\.?\s+komandytowa|spółka\s+partnerska)",
+        re.IGNORECASE
+    )
+    final_results = []
+    for r in merged_results:
+        if r.entity_type == "ORGANIZATION":
+            remaining = text[r.end:r.end + 60]
+            m = company_suffix.match(remaining)
+            if m:
+                r = RecognizerResult(
+                    entity_type="ORGANIZATION",
+                    start=r.start,
+                    end=r.end + m.end(),
+                    score=r.score,
+                    analysis_explanation=r.analysis_explanation,
+                )
+        final_results.append(r)
+
+    return [r for r in others if (r.start, r.end) not in absorbed] + final_results
 
 
 def post_process(results, text):
-    # Merge adjacent ORG entities (e.g. "ByteForge Sp." + "z o.o.")
-    results = _merge_adjacent_orgs(results, text)
-    # Extend locations to include street numbers
-    results = _extend_locations_with_numbers(results, text)
-
-    filtered = []
+    # Filter stopwords FIRST, before merging (so "Zarządu" doesn't get merged with adjacent PERSON)
+    pre_filtered = []
     for r in results:
         entity_text = text[r.start:r.end].strip()
         if r.entity_type in ("PERSON", "ORGANIZATION") and entity_text in POLISH_LEGAL_STOPWORDS:
@@ -183,9 +251,14 @@ def post_process(results, text):
             continue
         if r.entity_type in ("URL", "DATE_TIME"):
             continue
-        filtered.append(r)
+        pre_filtered.append(r)
+
+    # Now merge and extend
+    results = _merge_entity_sequences(pre_filtered, text)
+    results = _extend_locations_with_numbers(results, text)
 
     result_map = {}
+    filtered = results
     for r in filtered:
         key = (r.start, r.end)
         if key not in result_map:

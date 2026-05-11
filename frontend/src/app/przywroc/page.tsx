@@ -85,9 +85,16 @@ export default function PrzywrocPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-neutral-900">Przywróć dane</h1>
-          <p className="text-neutral-500 text-sm mt-1">
-            Wklej odpowiedź z Claude — pseudonimy zostaną zamienione na prawdziwe dane
-          </p>
+          {!restoredText && (
+            <p className="text-neutral-500 text-sm mt-1">
+              Wklej odpowiedź z AI — pseudonimy zostaną zamienione na prawdziwe dane
+            </p>
+          )}
+          {restoredText && (
+            <p className="text-green-600 text-sm mt-1">
+              Dane przywrócone — użyj &quot;Eksportuj&quot;, aby skopiować lub pobrać
+            </p>
+          )}
         </div>
         {restoredText && (
           <div className="relative" ref={exportMenuRef}>
