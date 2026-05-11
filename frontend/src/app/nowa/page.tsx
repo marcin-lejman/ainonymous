@@ -82,7 +82,7 @@ export default function NowaSprawaPage() {
             </h2>
             <p className="text-sm text-neutral-500 mb-6">
               {useLlm
-                ? "Presidio + Bielik szukają danych osobowych. To może potrwać do 30 sekund."
+                ? "Presidio + lokalne AI szukają danych osobowych. To może potrwać do 30 sekund."
                 : "Presidio szuka danych osobowych w tekście."}
             </p>
             <Progress value={progress} className="max-w-xs mx-auto" />
@@ -239,7 +239,7 @@ export default function NowaSprawaPage() {
                 <p className="text-xs text-amber-700">
                   Pobierz model poleceniem:{" "}
                   <code className="bg-amber-100 px-1 rounded">
-                    ollama pull SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M
+                    ollama pull gemma3:12b
                   </code>
                 </p>
               </div>

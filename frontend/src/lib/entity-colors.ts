@@ -24,7 +24,7 @@ export function getEntityColor(type: string) {
 export function getSourceLabel(source: string): string {
   switch (source) {
     case "presidio": return "Automatyczny";
-    case "llm": return "AI (Bielik)";
+    case "llm": return "AI (lokalne)";
     case "manual": return "Ręczny";
     default: return source;
   }

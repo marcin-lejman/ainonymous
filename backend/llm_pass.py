@@ -85,10 +85,20 @@ def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct
     response.raise_for_status()
     raw = response.json()["response"].strip()
 
+    # Strip <think>...</think> blocks from reasoning models (deepseek-r1, etc.)
+    raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
+
+    # Strip markdown fences
     if raw.startswith("```"):
         raw = raw.split("```")[1]
         if raw.startswith("json"):
             raw = raw[4:]
+
+    # Extract JSON array — some models add text before/after
+    bracket_start = raw.find("[")
+    bracket_end = raw.rfind("]")
+    if bracket_start >= 0 and bracket_end > bracket_start:
+        raw = raw[bracket_start:bracket_end + 1]
 
     try:
         return json.loads(raw)

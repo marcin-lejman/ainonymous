@@ -148,10 +148,14 @@ def get_settings():
     return load_settings()
 
 
+class SettingsUpdate(BaseModel):
+    llm_model: Optional[str] = None
+
 @app.put("/api/settings")
-def update_settings(body: dict):
+def update_settings(body: SettingsUpdate):
     settings = load_settings()
-    settings.update(body)
+    for key, val in body.model_dump(exclude_none=True).items():
+        settings[key] = val
     save_settings(settings)
     return settings
 
