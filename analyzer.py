@@ -128,6 +128,8 @@ def _extend_locations_with_numbers(results, text):
 def _merge_entity_sequences(results, text):
     """Merge adjacent ORG/PERSON entities that form a single company or firm name."""
     from presidio_analyzer import RecognizerResult
+    import re as _re
+
     mergeable_types = {"ORGANIZATION", "PERSON"}
     candidates = [r for r in results if r.entity_type in mergeable_types]
     others = [r for r in results if r.entity_type not in mergeable_types]
@@ -137,11 +139,25 @@ def _merge_entity_sequences(results, text):
     sequences: list[list] = [[candidates[0]]]
     for curr in candidates[1:]:
         prev = sequences[-1][-1]
-        gap = text[prev.end:curr.start].strip()
-        if len(text[prev.end:curr.start]) <= 5 and (gap == "" or gap in ("i", "-", "&", "·")):
-            sequences[-1].append(curr)
-        else:
-            sequences.append([curr])
+        raw_gap = text[prev.end:curr.start]
+        gap = raw_gap.strip()
+        # Same-type ORG+ORG with whitespace gap
+        if prev.entity_type == "ORGANIZATION" and curr.entity_type == "ORGANIZATION":
+            if len(raw_gap) <= 3 and (gap == "" or gap in ("i", "-", "&", "·")):
+                sequences[-1].append(curr)
+                continue
+        # Cross-type: only "i" or "&", NOT "-" (em dash separator)
+        if prev.entity_type != curr.entity_type:
+            if gap in ("i", "&") and "-" not in raw_gap:
+                sequences[-1].append(curr)
+                continue
+        # PERSON+PERSON with "i"
+        if prev.entity_type == "PERSON" and curr.entity_type == "PERSON":
+            if gap == "i":
+                sequences[-1].append(curr)
+                continue
+        sequences.append([curr])
+
     merged_results = []
     absorbed = set()
     for seq in sequences:
@@ -162,19 +178,37 @@ def _merge_entity_sequences(results, text):
                     absorbed.add((r.start, r.end))
         else:
             merged_results.extend(seq)
-    return [r for r in others if (r.start, r.end) not in absorbed] + merged_results
+
+    # Extend merged ORGs to absorb trailing company suffixes
+    company_suffix = _re.compile(
+        r"[-\w]*\s*(?:spółka\s+cywilna|sp(?:ółka)?\.?\s*(?:z\s*o\.?\s*o\.?|j\.|k\.|p\.)|"
+        r"s\.?\s*c\.?|S\.?\s*A\.?|sp(?:ółka)?\.?\s+komandytowa|spółka\s+partnerska)",
+        _re.IGNORECASE
+    )
+    final_results = []
+    for r in merged_results:
+        if r.entity_type == "ORGANIZATION":
+            remaining = text[r.end:r.end + 60]
+            m = company_suffix.match(remaining)
+            if m:
+                r = RecognizerResult(
+                    entity_type="ORGANIZATION",
+                    start=r.start,
+                    end=r.end + m.end(),
+                    score=r.score,
+                    analysis_explanation=r.analysis_explanation,
+                )
+        final_results.append(r)
+
+    return [r for r in others if (r.start, r.end) not in absorbed] + final_results
 
 
 def post_process(results, text):
     """Filter and resolve collisions in analyzer results."""
-    results = _merge_entity_sequences(results, text)
-    results = _extend_locations_with_numbers(results, text)
-    filtered = []
-
+    # Filter stopwords FIRST, before merging
+    pre_filtered = []
     for r in results:
         entity_text = text[r.start:r.end].strip()
-
-        # Filter legal stopwords (false positive PERSON/ORG/LOCATION)
         if r.entity_type in ("PERSON", "ORGANIZATION") and entity_text in POLISH_LEGAL_STOPWORDS:
             continue
         if r.entity_type == "ORGANIZATION" and (entity_text.startswith("\u201e") or entity_text.startswith('"')):
@@ -183,14 +217,10 @@ def post_process(results, text):
                 continue
         if r.entity_type == "LOCATION" and entity_text in LOCATION_STOPWORDS:
             continue
-
-        # Filter very short entities that are likely noise
         if r.entity_type == "PERSON" and len(entity_text) <= 2:
             continue
         if r.entity_type == "LOCATION" and len(entity_text) <= 3:
             continue
-
-        # Filter address fragments incorrectly tagged as PERSON (e.g. "Dietla 89/14")
         if r.entity_type == "PERSON" and any(c.isdigit() for c in entity_text):
             continue
 
@@ -202,13 +232,15 @@ def post_process(results, text):
         if r.entity_type == "DATE_TIME":
             continue
 
-        filtered.append(r)
+        pre_filtered.append(r)
+
+    # Now merge and extend
+    results = _merge_entity_sequences(pre_filtered, text)
+    results = _extend_locations_with_numbers(results, text)
 
     # Resolve NIP vs KRS vs PHONE collisions on the same span.
-    # If a 10-digit number is recognized as multiple types, keep the highest-scoring one.
-    # NIP with valid checksum should always win over KRS/PHONE.
     result_map = {}
-    for r in filtered:
+    for r in results:
         key = (r.start, r.end)
         if key not in result_map:
             result_map[key] = []
