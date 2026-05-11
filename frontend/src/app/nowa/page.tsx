@@ -251,10 +251,7 @@ export default function NowaSprawaPage() {
                   ))}
                 </select>
                 <p className="text-[11px] text-neutral-400 mt-1">
-                  Zalecany: <strong>Bielik</strong> — jedyny model dobrze realizujący to zadanie po polsku.
-                  {!selectedModel.includes("bielik") && selectedModel && (
-                    <span className="text-amber-600"> Wybrany model może nie podążać za wymaganym formatem.</span>
-                  )}
+                  Wybór zostanie zapamiętany. Zainstaluj nowe modele: <code className="bg-neutral-100 px-1 rounded">ollama pull nazwa_modelu</code>
                 </p>
               </div>
             )}
