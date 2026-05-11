@@ -1,0 +1,76 @@
+UMOWA LICENCYJNA NA OPROGRAMOWANIE
+Nr UL/2024/0331
+
+zawarta w dniu 28 czerwca 2024 roku w Piasecznie
+
+pomiędzy:
+
+"QUANTUM.AI" sp. z o.o. z siedzibą w Piasecznie, ul. Technologiczna 9, 05-500 Piaseczno,
+wpisaną do rejestru przedsiębiorców Krajowego Rejestru Sądowego pod numerem KRS: 0000445566,
+NIP: 5638210020, REGON: 228749000,
+reprezentowaną przez Aleksandrę Joannę Pietrzak-Nowak, Prezes Zarządu,
+PESEL: 62385734156,
+e-mail: a.pietrzak-nowak@quantum-ai.pl, tel.: +48 22 750 88 91,
+zwaną dalej "Licencjodawcą",
+
+a
+
+Grupą Azoty Zakłady Chemiczne "Police" S.A. z siedzibą w Policach,
+ul. Kuźnicka 1, 72-010 Police,
+wpisaną do rejestru przedsiębiorców KRS pod numerem KRS: 0000556677,
+NIP: 335-941-06-12, REGON: 400396570,
+reprezentowaną przez Tomasza Włodarczyka, Dyrektora ds. Informatyki,
+e-mail: t.wlodarczyk@grupaazoty-police.pl, tel.: 91 317 45 00,
+zwaną dalej "Licencjobiorcą",
+
+łącznie zwanymi "Stronami", o następującej treści:
+
+§ 1. Definicje
+1. "Oprogramowanie" oznacza system zarządzania procesami produkcyjnymi QUANTUM.AI
+   Process Manager w wersji 4.2, wraz z modułami analitycznymi i predykcyjnymi.
+2. "Dokumentacja" oznacza wszelkie materiały techniczne, instrukcje obsługi oraz specyfikacje
+   dostarczone przez Licencjodawcę w związku z Oprogramowaniem.
+3. "Użytkownik końcowy" oznacza pracownika Licencjobiorcy upoważnionego do korzystania
+   z Oprogramowania.
+
+§ 2. Przedmiot umowy
+1. Licencjodawca udziela Licencjobiorcy niewyłącznej, niezbywalnej licencji na korzystanie
+   z Oprogramowania na terytorium Rzeczypospolitej Polskiej.
+2. Licencja obejmuje prawo do instalacji Oprogramowania na serwerach Licencjobiorcy
+   oraz korzystania z niego przez maksymalnie 150 Użytkowników końcowych.
+
+§ 3. Okres obowiązywania
+1. Licencja zostaje udzielona na okres 36 miesięcy od dnia podpisania niniejszej umowy.
+2. Po upływie okresu licencyjnego umowa ulega automatycznemu przedłużeniu na kolejne
+   12-miesięczne okresy, chyba że jedna ze Stron wypowie ją z zachowaniem
+   trzymiesięcznego okresu wypowiedzenia.
+
+§ 4. Wynagrodzenie
+1. Licencjobiorca zobowiązuje się do zapłaty opłaty licencyjnej w wysokości 485 000,00 zł
+   netto (słownie: czterysta osiemdziesiąt pięć tysięcy złotych) rocznie.
+2. Do kwoty netto zostanie doliczony podatek VAT zgodnie z obowiązującymi przepisami.
+3. Opłata licencyjna płatna jest z góry za każdy rok licencyjny, w terminie 30 dni
+   od daty wystawienia faktury, na rachunek bankowy Licencjodawcy.
+
+§ 5. Wsparcie techniczne i aktualizacje
+1. Licencjodawca zapewnia wsparcie techniczne w godzinach 8:00-18:00 w dni robocze.
+2. Wsparcie techniczne obejmuje pomoc w rozwiązywaniu problemów technicznych,
+   aktualizacje bezpieczeństwa oraz aktualizacje funkcjonalne Oprogramowania.
+3. Aleksandra Joanna Pietrzak-Nowak jest administratorem systemu z uprawnieniami root,
+   jedynym w dziale IT zamawiającego odpowiedzialnym za wdrożenie.
+
+§ 6. Ograniczenia licencji
+1. Licencjobiorca nie może kopiować, modyfikować, dekompilować ani dezasemblować
+   Oprogramowania bez uprzedniej pisemnej zgody Licencjodawcy.
+2. Licencjobiorca nie może udzielać sublicencji ani przenosić praw wynikających
+   z niniejszej umowy na osoby trzecie.
+
+§ 7. Postanowienia końcowe
+1. Wszelkie spory wynikające z niniejszej umowy będą rozstrzygane przez sąd właściwy
+   dla siedziby Licencjodawcy.
+2. Umowę sporządzono w dwóch jednobrzmiących egzemplarzach, po jednym dla każdej ze Stron.
+
+........................                    ........................
+Licencjodawca                               Licencjobiorca
+"QUANTUM.AI" sp. z o.o.                     Grupa Azoty Zakłady Chemiczne "Police" S.A.
+Aleksandra Joanna Pietrzak-Nowak            Tomasz Włodarczyk

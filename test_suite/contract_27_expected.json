@@ -1,0 +1,73 @@
+{
+  "contract_type": "umowa przewozu",
+  "entities": [
+    {
+      "text": "„Trans-Pol\" Przedsiębiorstwo Transportowe Zbigniew Mucha",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Tomaszowie Mazowieckim",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Tomaszów Mazowiecki",
+      "type": "LOCATION"
+    },
+    {
+      "text": "7110313436",
+      "type": "NIP"
+    },
+    {
+      "text": "774752597",
+      "type": "REGON"
+    },
+    {
+      "text": "Zbigniewa Muchę",
+      "type": "PERSON"
+    },
+    {
+      "text": "05838427067",
+      "type": "PESEL"
+    },
+    {
+      "text": "kierowca z 20-letnim stażem, jedyny posiadacz licencji ADR w firmie",
+      "type": "CONTEXTUAL"
+    },
+    {
+      "text": "44 724 33 21",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "693 421 876",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "IKEA Distribution Services sp. z o.o.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "0000101010",
+      "type": "KRS"
+    },
+    {
+      "text": "124-428-31-99",
+      "type": "NIP"
+    },
+    {
+      "text": "290868920",
+      "type": "REGON"
+    },
+    {
+      "text": "Annę Bergström",
+      "type": "PERSON"
+    },
+    {
+      "text": "Zbigniew Mucha",
+      "type": "PERSON"
+    },
+    {
+      "text": "Anna Bergström",
+      "type": "PERSON"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Kancelaria Windykacyjna \"Pragma\" sp. z o.o. sp.k.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Nowy Sącz",
+      "type": "LOCATION"
+    },
+    {
+      "text": "ul. Marszałka Józefa Piłsudskiego 128/4, 33-300 Nowy Sącz",
+      "type": "LOCATION"
+    },
+    {
+      "text": "9731693229",
+      "type": "NIP"
+    },
+    {
+      "text": "Tomasza Grabowskiego",
+      "type": "PERSON"
+    },
+    {
+      "text": "Haliną Wójcik",
+      "type": "PERSON"
+    },
+    {
+      "text": "ul. Lwowska 33 m. 7, 33-300 Nowy Sącz",
+      "type": "LOCATION"
+    },
+    {
+      "text": "81756048061",
+      "type": "PESEL"
+    },
+    {
+      "text": "732-428-88-13",
+      "type": "NIP"
+    },
+    {
+      "text": "504 777 213",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "h.wojcik@poczta.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "Adama Nowickiego",
+      "type": "PERSON"
+    },
+    {
+      "text": "ul. Jagiellońska 91/2,\n33-300 Nowy Sącz",
+      "type": "LOCATION"
+    },
+    {
+      "text": "74062819537",
+      "type": "PESEL"
+    },
+    {
+      "text": "PL 44 1020 3176 0000 5302 0135 8249",
+      "type": "IBAN_CODE"
+    },
+    {
+      "text": "Joanna Nowicka",
+      "type": "PERSON"
+    },
+    {
+      "text": "była żona dłużnika, zamieszkała pod tym\n   samym adresem do marca 2024",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

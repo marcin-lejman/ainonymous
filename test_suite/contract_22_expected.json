@@ -1,0 +1,105 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Wydawnictwem Naukowym PWN S.A.",
+      "type": "ORGANIZATION",
+      "count": 1
+    },
+    {
+      "text": "Wydawnictwo Naukowe PWN S.A.",
+      "type": "ORGANIZATION",
+      "count": 1
+    },
+    {
+      "text": "Rudzie Śląskiej",
+      "type": "LOCATION",
+      "count": 3
+    },
+    {
+      "text": "Ruda Śląska",
+      "type": "LOCATION",
+      "count": 2
+    },
+    {
+      "text": "Warszawie",
+      "type": "LOCATION",
+      "count": 1
+    },
+    {
+      "text": "ul. Karola Goduli 18",
+      "type": "LOCATION",
+      "count": 1
+    },
+    {
+      "text": "ul. Bukowa 7/2",
+      "type": "LOCATION",
+      "count": 1
+    },
+    {
+      "text": "Annę Kowalską",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Stanisławem Wojciechem Lewandowskim",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Stanisław Wojciech Lewandowski",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "56018830845",
+      "type": "PESEL",
+      "count": 1
+    },
+    {
+      "text": "7759100917",
+      "type": "NIP",
+      "count": 1
+    },
+    {
+      "text": "263-699-00-12",
+      "type": "NIP",
+      "count": 1
+    },
+    {
+      "text": "082043209",
+      "type": "REGON",
+      "count": 1
+    },
+    {
+      "text": "0000889900",
+      "type": "KRS",
+      "count": 1
+    },
+    {
+      "text": "kontakt@pwn-ruda.pl",
+      "type": "EMAIL_ADDRESS",
+      "count": 1
+    },
+    {
+      "text": "s.lewandowski@uni.edu.pl",
+      "type": "EMAIL_ADDRESS",
+      "count": 1
+    },
+    {
+      "text": "32-248-77-01",
+      "type": "PHONE_NUMBER",
+      "count": 1
+    },
+    {
+      "text": "691 402 578",
+      "type": "PHONE_NUMBER",
+      "count": 1
+    },
+    {
+      "text": "jedynym żyjącym ekspertem od dialektów śląskich w Polsce",
+      "type": "CONTEXTUAL",
+      "count": 1
+    }
+  ]
+}

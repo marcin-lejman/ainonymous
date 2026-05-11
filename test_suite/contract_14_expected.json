@@ -1,0 +1,81 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Fundacja \"Przyszłość Edukacji\"",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Stowarzyszenie Rozwoju Regionalnego \"Podlasie\"",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Jelenia Góra",
+      "type": "LOCATION"
+    },
+    {
+      "text": "ul. Bankowa 10/2, 58-500 Jelenia Góra",
+      "type": "LOCATION"
+    },
+    {
+      "text": "338-366-88-11",
+      "type": "NIP"
+    },
+    {
+      "text": "103073870",
+      "type": "REGON"
+    },
+    {
+      "text": "0000223344",
+      "type": "KRS"
+    },
+    {
+      "text": "Ewa Szymańska",
+      "type": "PERSON"
+    },
+    {
+      "text": "35817839707",
+      "type": "PESEL"
+    },
+    {
+      "text": "e.szymanska@przyszlosc-edukacji.org.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "ul. Wolności 28, 58-500 Jelenia Góra",
+      "type": "LOCATION"
+    },
+    {
+      "text": "345-957-31-01",
+      "type": "NIP"
+    },
+    {
+      "text": "703093262",
+      "type": "REGON"
+    },
+    {
+      "text": "0000334455",
+      "type": "KRS"
+    },
+    {
+      "text": "Krzysztofa Dąbrowskiego",
+      "type": "PERSON"
+    },
+    {
+      "text": "52327928208",
+      "type": "PESEL"
+    },
+    {
+      "text": "+48 75 642 31 90",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "k.dabrowski@srr-podlasie.org",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "wieloletnia wolontariuszka fundacji, jedyna osoba\n   z certyfikatem PMI w regionie",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

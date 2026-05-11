@@ -1,0 +1,73 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Centrum Mediacji przy Okręgowej Izbie Radców Prawnych",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Henryka Antoniego Mazura",
+      "type": "PERSON"
+    },
+    {
+      "text": "79721837802",
+      "type": "PESEL"
+    },
+    {
+      "text": "mediator certyfikowany przez Ministerstwo Sprawiedliwości, jedyny w powiecie tarnogórskim",
+      "type": "CONTEXTUAL"
+    },
+    {
+      "text": "ul. Krakowska 7, 42-600 Tarnowskie Góry",
+      "type": "LOCATION"
+    },
+    {
+      "text": "32 285 44 77",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "Katarzyną Marią Pawłowską",
+      "type": "PERSON"
+    },
+    {
+      "text": "15715098402",
+      "type": "PESEL"
+    },
+    {
+      "text": "Robertem Stanisławem Dudą",
+      "type": "PERSON"
+    },
+    {
+      "text": "95642290601",
+      "type": "PESEL"
+    },
+    {
+      "text": "Henryka Antoniego Mazura",
+      "type": "PERSON"
+    },
+    {
+      "text": "Henryk Antoni Mazur",
+      "type": "PERSON"
+    },
+    {
+      "text": "Katarzyna Maria Pawłowska",
+      "type": "PERSON"
+    },
+    {
+      "text": "Robert Stanisław Duda",
+      "type": "PERSON"
+    },
+    {
+      "text": "Tarnowskich Górach",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Tarnowskie Góry",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Tarnowskich Gór",
+      "type": "LOCATION"
+    }
+  ]
+}

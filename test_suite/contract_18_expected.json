@@ -1,0 +1,69 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Pracownią Architektoniczną Borys i Partnerzy sp.p.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Pracowni Architektonicznej Borys i Partnerzy sp.p.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Pracownia Architektoniczna\nBorys i Partnerzy sp.p.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Gorzowie Wielkopolskim",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Gorzów Wielkopolski",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Michała Borysa",
+      "type": "PERSON"
+    },
+    {
+      "text": "Michałem Borysem",
+      "type": "PERSON"
+    },
+    {
+      "text": "Michał Borys",
+      "type": "PERSON"
+    },
+    {
+      "text": "21840905360",
+      "type": "PESEL"
+    },
+    {
+      "text": "615-768-68-44",
+      "type": "NIP"
+    },
+    {
+      "text": "5514831030",
+      "type": "NIP"
+    },
+    {
+      "text": "249520590",
+      "type": "REGON"
+    },
+    {
+      "text": "0000667788",
+      "type": "KRS"
+    },
+    {
+      "text": "95 720 33 44",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "m.borys@borys-architekci.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "jedynym architektem w spółce z uprawnieniami\n   do projektowania obiektów zabytkowych",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

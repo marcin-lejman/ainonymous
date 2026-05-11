@@ -1,0 +1,57 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Kędzierzyn-Koźle",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Marią Jankowską",
+      "type": "PERSON"
+    },
+    {
+      "text": "al. Jana Pawła II 45/2, 47-200 Kędzierzyn-Koźle",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Jan Paweł Kowalczyk",
+      "type": "PERSON"
+    },
+    {
+      "text": "ul. Kozielska 17/3, 47-200 Kędzierzyn-Koźle",
+      "type": "LOCATION"
+    },
+    {
+      "text": "10276161248",
+      "type": "PESEL"
+    },
+    {
+      "text": "Anna Maria Wiśniewska-Kowalczyk",
+      "type": "PERSON"
+    },
+    {
+      "text": "ul. Głowackiego 8 m. 12, 47-200 Kędzierzyn-Koźle",
+      "type": "LOCATION"
+    },
+    {
+      "text": "90652863030",
+      "type": "PESEL"
+    },
+    {
+      "text": "ul. Piastowskiej 22",
+      "type": "LOCATION"
+    },
+    {
+      "text": "KW nr OP1K/00045678/9",
+      "type": "CONTEXTUAL"
+    },
+    {
+      "text": "Zbigniew Malinowski",
+      "type": "PERSON"
+    },
+    {
+      "text": "sąsiad z działki przylegającej, który zgłosił\n   zastrzeżenia do planu zagospodarowania",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

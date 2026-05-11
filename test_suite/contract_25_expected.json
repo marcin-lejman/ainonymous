@@ -1,0 +1,90 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Wałbrzychu",
+      "type": "LOCATION",
+      "count": 4
+    },
+    {
+      "text": "Wałbrzych",
+      "type": "LOCATION",
+      "count": 3
+    },
+    {
+      "text": "Rynek 14/3",
+      "type": "LOCATION",
+      "count": 2
+    },
+    {
+      "text": "ul. Generała Władysława Sikorskiego 88 m. 4",
+      "type": "LOCATION",
+      "count": 1
+    },
+    {
+      "text": "ul. Mickiewicza 3/1",
+      "type": "LOCATION",
+      "count": 1
+    },
+    {
+      "text": "Wrocławia",
+      "type": "LOCATION",
+      "count": 1
+    },
+    {
+      "text": "Robertem Stanisławem Kamińskim",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Robert Stanisław Kamiński",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Katarzyną Marią Nowicką",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Katarzyna Maria Nowicka",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Małgorzatę Kwiatkowską-Dudę",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "62475227665",
+      "type": "PESEL",
+      "count": 1
+    },
+    {
+      "text": "82543479628",
+      "type": "PESEL",
+      "count": 1
+    },
+    {
+      "text": "74-842-56-78",
+      "type": "PHONE_NUMBER",
+      "count": 1
+    },
+    {
+      "text": "512 333 444",
+      "type": "PHONE_NUMBER",
+      "count": 1
+    },
+    {
+      "text": "k.nowicka@poczta.pl",
+      "type": "EMAIL_ADDRESS",
+      "count": 1
+    },
+    {
+      "text": "poprzedni najemca, student medycyny z Wrocławia, który wyprowadził się w styczniu",
+      "type": "CONTEXTUAL",
+      "count": 1
+    }
+  ]
+}

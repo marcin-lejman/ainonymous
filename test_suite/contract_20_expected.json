@@ -1,0 +1,73 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Wspólnotą Mieszkaniową \"Słoneczna 14\"",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Wspólnoty Mieszkaniowej \"Słoneczna 14\"",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Wspólnota Mieszkaniowa \"Słoneczna 14\"",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "PKP Polskie Linie Kolejowe S.A. Oddział w Krakowie",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "PKP Polskie Linie Kolejowe S.A.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Skierniewicach",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Skierniewice",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Jana Kosa",
+      "type": "PERSON"
+    },
+    {
+      "text": "Jan Kos",
+      "type": "PERSON"
+    },
+    {
+      "text": "45782464695",
+      "type": "PESEL"
+    },
+    {
+      "text": "104-776-58-30",
+      "type": "NIP"
+    },
+    {
+      "text": "0000778899",
+      "type": "KRS"
+    },
+    {
+      "text": "583642847",
+      "type": "REGON"
+    },
+    {
+      "text": "PL 51 1030 1508 0000 0005 0112 3456",
+      "type": "IBAN_CODE"
+    },
+    {
+      "text": "46-833-22-11",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "600 123 456",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "lokatorem z mieszkania nr 3, przewodniczącym\n   rady nadzorczej wspólnoty od 2019 roku",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

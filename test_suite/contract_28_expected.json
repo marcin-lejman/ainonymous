@@ -1,0 +1,69 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Kancelaria Radców Prawnych Nowakowski, Szymański i Partnerzy sp.p.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Częstochowie",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Częstochowa",
+      "type": "LOCATION"
+    },
+    {
+      "text": "150-346-58-03",
+      "type": "NIP"
+    },
+    {
+      "text": "738165681",
+      "type": "REGON"
+    },
+    {
+      "text": "0000202020",
+      "type": "KRS"
+    },
+    {
+      "text": "mec. Radosława Nowakowskiego",
+      "type": "PERSON"
+    },
+    {
+      "text": "33172445186",
+      "type": "PESEL"
+    },
+    {
+      "text": "r.nowakowski@knsp-kancelaria.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "+48 34 361 22 55",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "Jadwigą Elżbietą Krawczyk-Walczak",
+      "type": "PERSON"
+    },
+    {
+      "text": "38258112220",
+      "type": "PESEL"
+    },
+    {
+      "text": "mec. Radosław Nowakowski",
+      "type": "PERSON"
+    },
+    {
+      "text": "aplikantka radcowska w kancelarii, bratowa mecenasa Nowakowskiego",
+      "type": "CONTEXTUAL"
+    },
+    {
+      "text": "PL 31 1050 1142 1000 0092 5013 8421",
+      "type": "IBAN_CODE"
+    },
+    {
+      "text": "Jadwiga Elżbieta Krawczyk-Walczak",
+      "type": "PERSON"
+    }
+  ]
+}

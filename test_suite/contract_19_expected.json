@@ -1,0 +1,69 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Krystyną Marią Zawadzką",
+      "type": "PERSON"
+    },
+    {
+      "text": "Krystyna Maria Zawadzka",
+      "type": "PERSON"
+    },
+    {
+      "text": "Robertem Adamem Nowakowskim",
+      "type": "PERSON"
+    },
+    {
+      "text": "Robert Adam Nowakowski",
+      "type": "PERSON"
+    },
+    {
+      "text": "Jadwigą Teresą Nowakowską",
+      "type": "PERSON"
+    },
+    {
+      "text": "Jadwiga Teresa Nowakowska",
+      "type": "PERSON"
+    },
+    {
+      "text": "Stalowej Woli",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Stalowa Wola",
+      "type": "LOCATION"
+    },
+    {
+      "text": "pl. Wolności 7/12",
+      "type": "LOCATION"
+    },
+    {
+      "text": "65666581205",
+      "type": "PESEL"
+    },
+    {
+      "text": "56734341537",
+      "type": "PESEL"
+    },
+    {
+      "text": "36471764183",
+      "type": "PESEL"
+    },
+    {
+      "text": "459-144-99-39",
+      "type": "NIP"
+    },
+    {
+      "text": "158 442 33 55",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "+48 602 111 222",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "teściową dłużnika,\n   emerytowaną nauczycielką ze Stalowej Woli",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Władysławem Józefem Kaczmarkiem",
+      "type": "PERSON"
+    },
+    {
+      "text": "Władysław Józef Kaczmarek",
+      "type": "PERSON"
+    },
+    {
+      "text": "Inowrocławiu",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Grzybowo 14, gmina Inowrocław, powiat inowrocławski",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Inowrocławiu, ul. Królowej Jadwigi 31/5",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Grzybowo",
+      "type": "LOCATION"
+    },
+    {
+      "text": "74862570296",
+      "type": "PESEL"
+    },
+    {
+      "text": "29611124228",
+      "type": "PESEL"
+    },
+    {
+      "text": "053-291-60-53",
+      "type": "NIP"
+    },
+    {
+      "text": "(52) 357 42 18",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "PL 78 1140 2004 0000 3102 7618 4953",
+      "type": "IBAN_CODE"
+    },
+    {
+      "text": "Heleną Stanisławą Gronkowską",
+      "type": "PERSON"
+    },
+    {
+      "text": "Helena Stanisława Gronkowska",
+      "type": "PERSON"
+    },
+    {
+      "text": "dzierżawcą sąsiedniej działki,\n   emerytowanym weterynarzem ze wsi Grzybowo",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

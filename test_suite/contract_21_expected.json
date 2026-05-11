@@ -1,0 +1,90 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Auto-Handel Marian Zając",
+      "type": "ORGANIZATION",
+      "count": 1
+    },
+    {
+      "text": "Białymstoku",
+      "type": "LOCATION",
+      "count": 3
+    },
+    {
+      "text": "Białystok",
+      "type": "LOCATION",
+      "count": 2
+    },
+    {
+      "text": "ul. Hetmańska 2a/4",
+      "type": "LOCATION",
+      "count": 1
+    },
+    {
+      "text": "ul. Lipowa 34/8",
+      "type": "LOCATION",
+      "count": 1
+    },
+    {
+      "text": "Mariana Zająca",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Marian Zając",
+      "type": "PERSON",
+      "count": 2
+    },
+    {
+      "text": "Grażyną Weroniką Jabłońską-Mazur",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Grażyna Weronika Jabłońska-Mazur",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "24699736534",
+      "type": "PESEL",
+      "count": 1
+    },
+    {
+      "text": "50543246362",
+      "type": "PESEL",
+      "count": 1
+    },
+    {
+      "text": "981-463-19-46",
+      "type": "NIP",
+      "count": 1
+    },
+    {
+      "text": "716649479",
+      "type": "REGON",
+      "count": 1
+    },
+    {
+      "text": "85-732-11-55",
+      "type": "PHONE_NUMBER",
+      "count": 1
+    },
+    {
+      "text": "507 888 333",
+      "type": "PHONE_NUMBER",
+      "count": 1
+    },
+    {
+      "text": "PL 15 1020 1332 0000 1002 0517 4920",
+      "type": "IBAN_CODE",
+      "count": 1
+    },
+    {
+      "text": "mechanikiem z warsztatu obok, który wcześniej serwisował ten pojazd",
+      "type": "CONTEXTUAL",
+      "count": 1
+    }
+  ]
+}

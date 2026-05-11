@@ -1,0 +1,93 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "\"QUANTUM.AI\" sp. z o.o.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Piasecznie",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Piasecznie, ul. Technologiczna 9, 05-500 Piaseczno",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Policach",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Grupą Azoty Zakłady Chemiczne \"Police\" S.A.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Grupa Azoty Zakłady Chemiczne \"Police\" S.A.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "0000445566",
+      "type": "KRS"
+    },
+    {
+      "text": "0000556677",
+      "type": "KRS"
+    },
+    {
+      "text": "5638210020",
+      "type": "NIP"
+    },
+    {
+      "text": "335-941-06-12",
+      "type": "NIP"
+    },
+    {
+      "text": "228749000",
+      "type": "REGON"
+    },
+    {
+      "text": "400396570",
+      "type": "REGON"
+    },
+    {
+      "text": "Aleksandrę Joannę Pietrzak-Nowak",
+      "type": "PERSON"
+    },
+    {
+      "text": "Aleksandra Joanna Pietrzak-Nowak",
+      "type": "PERSON"
+    },
+    {
+      "text": "Tomasza Włodarczyka",
+      "type": "PERSON"
+    },
+    {
+      "text": "Tomasz Włodarczyk",
+      "type": "PERSON"
+    },
+    {
+      "text": "62385734156",
+      "type": "PESEL"
+    },
+    {
+      "text": "a.pietrzak-nowak@quantum-ai.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "t.wlodarczyk@grupaazoty-police.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "+48 22 750 88 91",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "91 317 45 00",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "administratorem systemu z uprawnieniami root,\n   jedynym w dziale IT zamawiającego",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "contract_type": "umowa użyczenia lokalu",
+  "entities": [
+    {
+      "text": "Bogdanem Mieczysławem Kowalskim",
+      "type": "PERSON"
+    },
+    {
+      "text": "27803613976",
+      "type": "PESEL"
+    },
+    {
+      "text": "Białej Podlaskiej",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Biała Podlaska",
+      "type": "LOCATION"
+    },
+    {
+      "text": "ul. bpa Wł. Bandurskiego 12/3, 21-500 Biała Podlaska",
+      "type": "LOCATION"
+    },
+    {
+      "text": "83-344-55-66",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "b.kowalski@poczta.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "Stowarzyszenie Pomocy Dzieciom „Tęcza\"",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "0000303030",
+      "type": "KRS"
+    },
+    {
+      "text": "295-828-84-01",
+      "type": "NIP"
+    },
+    {
+      "text": "017634757",
+      "type": "REGON"
+    },
+    {
+      "text": "Marię Teresę Zielińską",
+      "type": "PERSON"
+    },
+    {
+      "text": "515 222 333",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "Córka użyczającego, wolontariuszka stowarzyszenia od pierwszego roku jego istnienia",
+      "type": "CONTEXTUAL"
+    },
+    {
+      "text": "Bogdan Mieczysław Kowalski",
+      "type": "PERSON"
+    },
+    {
+      "text": "Maria Teresa Zielińska",
+      "type": "PERSON"
+    }
+  ]
+}

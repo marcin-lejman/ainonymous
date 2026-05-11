@@ -1,0 +1,81 @@
+{
+  "contract_type": "umowa barterowa",
+  "entities": [
+    {
+      "text": "Drukarnia Wielkoformatowa „PLAKAT.PL\" sp. z o.o.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Koszalinie",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Koszalin",
+      "type": "LOCATION"
+    },
+    {
+      "text": "747-895-35-22",
+      "type": "NIP"
+    },
+    {
+      "text": "553113368",
+      "type": "REGON"
+    },
+    {
+      "text": "Małgorzatę Annę Sikora",
+      "type": "PERSON"
+    },
+    {
+      "text": "81086253997",
+      "type": "PESEL"
+    },
+    {
+      "text": "biuro@plakat-pl.com",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "94 340 22 11",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "Agencja Reklamowa CreativeHouse Bartosz Wilk",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "058-338-96-75",
+      "type": "NIP"
+    },
+    {
+      "text": "236351202",
+      "type": "REGON"
+    },
+    {
+      "text": "Bartosza Wilka",
+      "type": "PERSON"
+    },
+    {
+      "text": "92505634215",
+      "type": "PESEL"
+    },
+    {
+      "text": "grafik z Creative House, mąż wspólniczki drukarni",
+      "type": "CONTEXTUAL"
+    },
+    {
+      "text": "b.wilk@creativehouse.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "604 777 888",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "Małgorzata Anna Sikora",
+      "type": "PERSON"
+    },
+    {
+      "text": "Bartosz Wilk",
+      "type": "PERSON"
+    }
+  ]
+}

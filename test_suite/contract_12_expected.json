@@ -1,0 +1,73 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Towarzystwo Ubezpieczeniowe \"Ochrona\" S.A.",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Zielona Góra",
+      "type": "LOCATION"
+    },
+    {
+      "text": "al. Niepodległości 15, 65-048 Zielona Góra",
+      "type": "LOCATION"
+    },
+    {
+      "text": "6279158230",
+      "type": "NIP"
+    },
+    {
+      "text": "715825804",
+      "type": "REGON"
+    },
+    {
+      "text": "0000112244",
+      "type": "KRS"
+    },
+    {
+      "text": "Annę Majewską",
+      "type": "PERSON"
+    },
+    {
+      "text": "Robertem Lewandowskim",
+      "type": "PERSON"
+    },
+    {
+      "text": "ul. Podgórna 22/8, 65-246 Zielona Góra",
+      "type": "LOCATION"
+    },
+    {
+      "text": "68819736994",
+      "type": "PESEL"
+    },
+    {
+      "text": "+48 68 324 55 67",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "r.lewandowski@lewubezp.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "Małgorzata Kaczmarek",
+      "type": "PERSON"
+    },
+    {
+      "text": "35632729517",
+      "type": "PESEL"
+    },
+    {
+      "text": "ul. Wrocławska 5/10, 67-100 Nowa Sól",
+      "type": "LOCATION"
+    },
+    {
+      "text": "m.kaczmarek@lewubezp.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "jedyny agent z licencją na region lubuski",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

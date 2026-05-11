@@ -1,0 +1,61 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "\"Budimex-Pol\" sp.j. Jan Wiśniewski i Wspólnicy",
+      "type": "ORGANIZATION"
+    },
+    {
+      "text": "Bielsko-Biała",
+      "type": "LOCATION"
+    },
+    {
+      "text": "ul. Cieszyńska 42, 43-300 Bielsko-Biała",
+      "type": "LOCATION"
+    },
+    {
+      "text": "086-712-93-57",
+      "type": "NIP"
+    },
+    {
+      "text": "717438023",
+      "type": "REGON"
+    },
+    {
+      "text": "Katarzyna Nowak-Wiśniewska",
+      "type": "PERSON"
+    },
+    {
+      "text": "66392332141",
+      "type": "PESEL"
+    },
+    {
+      "text": "os. Tysiąclecia 14 m. 3, 43-300 Bielsko-Biała",
+      "type": "LOCATION"
+    },
+    {
+      "text": "601 234 567",
+      "type": "PHONE_NUMBER"
+    },
+    {
+      "text": "k.nowak-wisniewska@budimexpol.pl",
+      "type": "EMAIL_ADDRESS"
+    },
+    {
+      "text": "Plac Ratuszowy 1, 43-300 Bielsko-Biała",
+      "type": "LOCATION"
+    },
+    {
+      "text": "Mariana Kowalskiego",
+      "type": "PERSON"
+    },
+    {
+      "text": "Piotr Zając",
+      "type": "PERSON"
+    },
+    {
+      "text": "brat wykonawcy,\n   który nadzorował poprzednią budowę na tej samej działce",
+      "type": "CONTEXTUAL"
+    }
+  ]
+}

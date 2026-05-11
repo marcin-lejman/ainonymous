@@ -1,0 +1,80 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Bankiem Spółdzielczym w Brodnicy",
+      "type": "ORGANIZATION",
+      "count": 1
+    },
+    {
+      "text": "Bank Spółdzielczy w Brodnicy",
+      "type": "ORGANIZATION",
+      "count": 1
+    },
+    {
+      "text": "Brodnicy",
+      "type": "LOCATION",
+      "count": 4
+    },
+    {
+      "text": "Brodnica",
+      "type": "LOCATION",
+      "count": 2
+    },
+    {
+      "text": "ul. Kamionka 56 m. 12",
+      "type": "LOCATION",
+      "count": 2
+    },
+    {
+      "text": "Tomasza Nowaka",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Henrykiem Tadeuszem Wiśniewskim",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Henryk Tadeusz Wiśniewski",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "64589943165",
+      "type": "PESEL",
+      "count": 1
+    },
+    {
+      "text": "1484424104",
+      "type": "NIP",
+      "count": 1
+    },
+    {
+      "text": "624520280",
+      "type": "REGON",
+      "count": 1
+    },
+    {
+      "text": "0000990011",
+      "type": "KRS",
+      "count": 1
+    },
+    {
+      "text": "PL 92 9484 0003 0000 0012 1234 5678",
+      "type": "IBAN_CODE",
+      "count": 1
+    },
+    {
+      "text": "+48 56 498 22 10",
+      "type": "PHONE_NUMBER",
+      "count": 1
+    },
+    {
+      "text": "pracownica oddziału, córka dyrektora banku",
+      "type": "CONTEXTUAL",
+      "count": 1
+    }
+  ]
+}

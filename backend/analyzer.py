@@ -205,11 +205,21 @@ def _merge_entity_sequences(results, text):
             # All PERSON — keep individually
             merged_results.extend(seq)
 
-    # Extend merged ORGs to absorb trailing company suffixes and hyphenated names
+    # Extend merged ORGs to absorb trailing text up to and including a company legal form.
+    # Handles: "ByteForge Sp." + " z o.o.", "Borys" + " i Partnerzy sp.p.",
+    # "Kosowicz" + " i Piechota-Młot spółka cywilna", etc.
     import re
+    LEGAL_FORMS = (
+        r"sp(?:ółka)?\.?\s*(?:z\s*o\.?\s*o\.?|j\.|k\.|p\.)"
+        r"|s\.?\s*c\.?"
+        r"|S\.?\s*A\.?"
+        r"|sp(?:ółka)?\.?\s+komandytowa"
+        r"|spółka\s+cywilna"
+        r"|spółka\s+partnerska"
+        r"|z\s*o\.?\s*o\.?"
+    )
     company_suffix = re.compile(
-        r"[-\w]*\s*(?:spółka\s+cywilna|sp(?:ółka)?\.?\s*(?:z\s*o\.?\s*o\.?|j\.|k\.|p\.)|"
-        r"s\.?\s*c\.?|S\.?\s*A\.?|sp(?:ółka)?\.?\s+komandytowa|spółka\s+partnerska)",
+        r"(?:[\s\-][-\w\s]*?)?\s*(?:" + LEGAL_FORMS + r")",
         re.IGNORECASE
     )
     final_results = []

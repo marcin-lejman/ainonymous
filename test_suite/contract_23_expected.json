@@ -1,0 +1,90 @@
+{
+  "contract_type": "auto",
+  "entities": [
+    {
+      "text": "Kowalski i Zieliński s.c.",
+      "type": "ORGANIZATION",
+      "count": 1
+    },
+    {
+      "text": "Ostrowcu Świętokrzyskim",
+      "type": "LOCATION",
+      "count": 4
+    },
+    {
+      "text": "Ostrowiec Świętokrzyski",
+      "type": "LOCATION",
+      "count": 3
+    },
+    {
+      "text": "ul. Iłżecka 15 m. 7",
+      "type": "LOCATION",
+      "count": 2
+    },
+    {
+      "text": "os. Słoneczne 22/14",
+      "type": "LOCATION",
+      "count": 1
+    },
+    {
+      "text": "Janem Kowalskim",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Jan Kowalski",
+      "type": "PERSON",
+      "count": 2
+    },
+    {
+      "text": "Piotrem Adamem Zielińskim",
+      "type": "PERSON",
+      "count": 1
+    },
+    {
+      "text": "Piotr Adam Zieliński",
+      "type": "PERSON",
+      "count": 2
+    },
+    {
+      "text": "28734678890",
+      "type": "PESEL",
+      "count": 1
+    },
+    {
+      "text": "94301419007",
+      "type": "PESEL",
+      "count": 1
+    },
+    {
+      "text": "533-106-42-26",
+      "type": "NIP",
+      "count": 1
+    },
+    {
+      "text": "426-142-66-16",
+      "type": "NIP",
+      "count": 1
+    },
+    {
+      "text": "283445659",
+      "type": "REGON",
+      "count": 1
+    },
+    {
+      "text": "41-247-33-88",
+      "type": "PHONE_NUMBER",
+      "count": 1
+    },
+    {
+      "text": "698 123 456",
+      "type": "PHONE_NUMBER",
+      "count": 1
+    },
+    {
+      "text": "żona jednego ze wspólników, księgowa prowadząca rachunkowość spółki",
+      "type": "CONTEXTUAL",
+      "count": 1
+    }
+  ]
+}
