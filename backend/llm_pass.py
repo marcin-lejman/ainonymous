@@ -80,7 +80,7 @@ def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct
     if on_progress:
         on_progress("loading", 0)
 
-    # Use /api/chat with system+user roles for better instruction following
+    # Use /api/chat with system+user roles + JSON schema enforcement
     document_msg = f"<document>\n{text}\n</document>"
     response = requests.post(
         f"{base_url}/api/chat",
@@ -92,6 +92,17 @@ def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct
             ],
             "stream": True,
             "options": {"temperature": 0.1},
+            "format": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "text": {"type": "string"},
+                        "reason": {"type": "string"},
+                    },
+                    "required": ["text", "reason"],
+                },
+            },
         },
         timeout=180,
         stream=True,

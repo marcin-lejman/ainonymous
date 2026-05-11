@@ -310,8 +310,8 @@ def llm_pass_streaming(case_id: str):
             print(f"[LLM] Prompt length: {len(full_prompt)} chars")
             print(f"[LLM] Prompt starts with: {full_prompt[:200]}")
             print(f"[LLM] Prompt ends with: {full_prompt[-100:]}")
-            print(f"[LLM] Settings llm_prompt present: {'llm_prompt' in settings}")
-            # Use /api/chat with system+user roles for better instruction following
+            print(f"[LLM] Prompt source: {'custom (from settings)' if settings.get('llm_prompt') else 'default (default_prompt.txt)'}")
+            # Use /api/chat with system+user roles + JSON schema enforcement
             document_msg = f"<document>\n{doc_text}\n</document>"
             resp = req.post(
                 f"{base_url}/api/chat",
@@ -323,6 +323,17 @@ def llm_pass_streaming(case_id: str):
                     ],
                     "stream": True,
                     "options": {"temperature": 0.1},
+                    "format": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "text": {"type": "string"},
+                                "reason": {"type": "string"},
+                            },
+                            "required": ["text", "reason"],
+                        },
+                    },
                 },
                 timeout=180,
                 stream=True,
