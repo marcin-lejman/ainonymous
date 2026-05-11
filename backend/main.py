@@ -329,9 +329,21 @@ def llm_pass_streaming(case_id: str):
             raw = "".join(raw_parts).strip()
             yield f"data: {json.dumps({'stage': 'parsing', 'tokens': token_count})}\n\n"
 
+            # Log raw LLM output for debugging
+            print(f"[LLM] Model: {selected_model}")
+            print(f"[LLM] Tokens: {token_count}")
+            print(f"[LLM] Raw output ({len(raw)} chars):")
+            print(f"[LLM] ---BEGIN---")
+            print(raw[:2000])
+            if len(raw) > 2000:
+                print(f"[LLM] ... ({len(raw) - 2000} more chars truncated)")
+            print(f"[LLM] ---END---")
+
             # Parse response
             import re as _re
-            raw = _re.sub(r"<think>.*?</think>", "", raw, flags=_re.DOTALL).strip()
+            raw_cleaned = _re.sub(r"<think>.*?</think>", "", raw, flags=_re.DOTALL).strip()
+            print(f"[LLM] After cleanup ({len(raw_cleaned)} chars): {raw_cleaned[:500]}")
+            raw = raw_cleaned
             if raw.startswith("```"):
                 raw = raw.split("```")[1]
                 if raw.startswith("json"):
@@ -342,8 +354,23 @@ def llm_pass_streaming(case_id: str):
                 raw = raw[bracket_start:bracket_end + 1]
 
             try:
-                contextual = json.loads(raw)
-            except json.JSONDecodeError:
+                parsed = json.loads(raw)
+                # Validate format: must be a list of objects with "text" key
+                if isinstance(parsed, list) and all(isinstance(item, dict) and "text" in item for item in parsed):
+                    contextual = parsed
+                    print(f"[LLM] Parsed {len(contextual)} contextual identifiers")
+                    for c in contextual:
+                        print(f"[LLM]   text: {c.get('text', '?')[:80]}")
+                        print(f"[LLM]   reason: {c.get('reason', '?')[:80]}")
+                else:
+                    print(f"[LLM] Model returned wrong format (expected JSON array of {{text, reason}})")
+                    print(f"[LLM] Got: {type(parsed).__name__} — model may not be compatible with this task")
+                    contextual = []
+                    yield f"data: {json.dumps({'stage': 'error', 'message': 'Model zwrócił dane w złym formacie. Spróbuj innego modelu (np. Bielik).'})}\n\n"
+                    return
+            except json.JSONDecodeError as e:
+                print(f"[LLM] JSON parse failed: {e}")
+                print(f"[LLM] Attempted to parse: {raw[:300]}")
                 contextual = []
 
             # Match to document text

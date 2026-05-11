@@ -74,7 +74,7 @@ export default function NowaSprawaPage() {
               setLlmStatus(`Znaleziono ${found} identyfikatorów kontekstowych`);
               setProgress(100);
             } else if (data.stage === "error") {
-              setLlmStatus(`Błąd: ${data.message}`);
+              setLlmStatus(data.message || "Wystąpił błąd");
               setProgress(100);
             }
           },
@@ -251,7 +251,8 @@ export default function NowaSprawaPage() {
                   ))}
                 </select>
                 <p className="text-[11px] text-neutral-400 mt-1">
-                  Wybór zostanie zapamiętany. Zainstaluj nowe modele: <code className="bg-neutral-100 px-1 rounded">ollama pull nazwa_modelu</code>
+                  Najlepiej działają modele rozumiejące polski: Bielik, Qwen, Gemma.
+                  Modele rozumowania (DeepSeek-R1) mogą nie podążać za formatem.
                 </p>
               </div>
             )}

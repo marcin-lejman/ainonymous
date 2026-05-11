@@ -117,10 +117,6 @@ export function streamLlmPass(
   onProgress: (data: { stage: string; tokens: number; found?: number; message?: string }) => void,
   onDone: () => void,
 ) {
-  const eventSource = new EventSource(`${API_BASE}/api/case/${caseId}/llm-pass`, {
-  });
-
-  // EventSource doesn't support POST, so we use fetch with ReadableStream
   fetch(`${API_BASE}/api/case/${caseId}/llm-pass`, { method: "POST" }).then(async (response) => {
     const reader = response.body?.getReader();
     if (!reader) return;
