@@ -7,34 +7,53 @@ from polish_recognizers import (
     KrsRecognizer,
     PolishIbanRecognizer,
     PolishPhoneRecognizer,
+    PolishAddressRecognizer,
+    PolishZipCityRecognizer,
 )
 
-POLISH_LEGAL_STOPWORDS = {
-    "Wynajmującej", "Wynajmującego", "Wynajmujący", "Wynajmującą",
-    "Najemcy", "Najemca", "Najemcą",
-    "Kupującej", "Kupującego", "Kupująca", "Kupujący",
-    "Sprzedającego", "Sprzedającej", "Sprzedający",
-    "Obdarowanego", "Obdarowanemu", "Obdarowany",
-    "Mocodawcy", "Mocodawca", "Mocodawcą",
-    "Pełnomocnika", "Pełnomocnik",
-    "Darczyńcy", "Darczyńca",
-    "Zleceniobiorcy", "Zleceniobiorca",
-    "Zleceniodawcy", "Zleceniodawca",
-    "Zamawiającego", "Zamawiający", "Zamawiającą",
-    "Wykonawcy", "Wykonawca", "Wykonawcą",
-    "Pożyczkodawcy", "Pożyczkodawca",
-    "Pożyczkobiorcy", "Pożyczkobiorca",
-    "Otrzymującej", "Otrzymującego", "Otrzymująca",
-    "Zawarta", "Zawarto",
+import re as _re
+
+# Polish legal role stems — we check if a single-word PERSON/ORG entity
+# starts with any of these stems. This is much more robust than listing
+# every declension of every legal role.
+_LEGAL_ROLE_STEMS = [
+    "Wynajmując", "Najemca", "Najemcy", "Najemcą",
+    "Kupując", "Sprzedając",
+    "Obdarowan", "Mocodawc", "Pełnomocnik", "Darczyńc",
+    "Zleceniobiorc", "Zleceniodawc",
+    "Zamawiając", "Wykonawc",
+    "Pożyczkodawc", "Pożyczkobiorc",
+    "Otrzymując",
+    "Pracodawc",
+    "Poręczyciel", "Cesjonariusz", "Cedent",
+    "Dzierżawc", "Komisant", "Komitent",
+    "Użyczając", "Biorąc",
+    "Licencjodawc", "Licencjobiorc",
+    "Mediator",
+]
+
+def _is_legal_role(text: str) -> bool:
+    """Check if text is a Polish legal role label (any declension)."""
+    text = text.strip()
+    # Multi-word phrases that are role labels
+    if text in (
+        "Stronę Ujawniającą", "Stronie Otrzymującej",
+        "Stronę Ujawniającą Stronie Otrzymującej",
+        "Strony Ujawniającej",
+    ):
+        return True
+    # Single words: check against stems
+    if " " in text:
+        return False
+    return any(text.startswith(stem) for stem in _LEGAL_ROLE_STEMS)
+
+# Exact-match stopwords for things that aren't role labels but cause FPs
+ENTITY_STOPWORDS = {
     "A.", "B.", "C.", "D.",
-    "Zarządu", "Zarząd",
-    "Stron", "Strony", "Stronom",
-    "Stronę Ujawniającą", "Stronie Otrzymującej",
-    "Stronę Ujawniającą Stronie Otrzymującej",
-    "Strony Ujawniającej",
-    "Pracodawcą", "Pracodawcy", "Pracodawca",
+    "Zarządu", "Zarząd", "Zarządowi",
+    "Stron", "Strony", "Stronom", "Stronami",
     "KRS", "ZUS", "PIT", "CIT", "VAT", "UJ",
-    "ZACHOWANIU", "Lokalu", "Lokal",
+    "ZACHOWANIU", "Lokalu", "Lokal", "Zawarta", "Zawarto",
 }
 
 LOCATION_STOPWORDS = {
@@ -85,6 +104,8 @@ def get_analyzer():
     analyzer.registry.add_recognizer(KrsRecognizer())
     analyzer.registry.add_recognizer(PolishIbanRecognizer())
     analyzer.registry.add_recognizer(PolishPhoneRecognizer())
+    analyzer.registry.add_recognizer(PolishAddressRecognizer())
+    analyzer.registry.add_recognizer(PolishZipCityRecognizer())
 
     _analyzer_instance = analyzer
     return analyzer
@@ -245,11 +266,13 @@ def post_process(results, text):
     pre_filtered = []
     for r in results:
         entity_text = text[r.start:r.end].strip()
-        if r.entity_type in ("PERSON", "ORGANIZATION") and entity_text in POLISH_LEGAL_STOPWORDS:
+        if r.entity_type in ("PERSON", "ORGANIZATION") and (
+            entity_text in ENTITY_STOPWORDS or _is_legal_role(entity_text)
+        ):
             continue
         if r.entity_type == "ORGANIZATION" and (entity_text.startswith("\u201e") or entity_text.startswith('"')):
             clean = entity_text.strip('\u201e\u201d"')
-            if clean in POLISH_LEGAL_STOPWORDS:
+            if clean in ENTITY_STOPWORDS or _is_legal_role(clean):
                 continue
         if r.entity_type == "LOCATION" and entity_text in LOCATION_STOPWORDS:
             continue

@@ -224,14 +224,14 @@ class PolishPhoneRecognizer(PatternRecognizer):
         Pattern(name="pl_phone_dashed", regex=r"\b48-\d{3}-\d{3}-\d{3}\b", score=0.6),
         # Landline: 12 634 22 87
         Pattern(name="pl_phone_landline", regex=r"\b\d{2}\s\d{3}\s\d{2}\s\d{2}\b", score=0.3),
-        # Mobile no country code: 601 234 567
-        Pattern(name="pl_phone_mobile_9", regex=r"\b[4-9]\d{2}\s\d{3}\s\d{3}\b", score=0.3),
+        # Mobile no country code: 601 234 567 (Polish mobile starts with 5-8)
+        Pattern(name="pl_phone_mobile_9", regex=r"\b[5-8]\d{2}\s\d{3}\s\d{3}\b", score=0.3),
         # Mobile compact: 601234567
-        Pattern(name="pl_phone_mobile_compact", regex=r"\b[4-9]\d{8}\b", score=0.2),
+        Pattern(name="pl_phone_mobile_compact", regex=r"\b[5-8]\d{8}\b", score=0.2),
         # With parens: (12) 345 67 89
         Pattern(name="pl_phone_parens", regex=r"\(\d{2}\)\s?\d{3}\s?\d{2}\s?\d{2}", score=0.4),
         # Dashed 9-digit: 601-234-567
-        Pattern(name="pl_phone_dashed_9", regex=r"\b[4-9]\d{2}-\d{3}-\d{3}\b", score=0.4),
+        Pattern(name="pl_phone_dashed_9", regex=r"\b[5-8]\d{2}-\d{3}-\d{3}\b", score=0.4),
         # Dashed landline: 12-345-67-89
         Pattern(name="pl_phone_dashed_landline", regex=r"\b\d{2}-\d{3}-\d{2}-\d{2}\b", score=0.3),
     ]
@@ -245,5 +245,78 @@ class PolishPhoneRecognizer(PatternRecognizer):
                 "tel", "tel.", "telefon", "telefonu", "telefoniczn",
                 "kontakt", "mobile", "komórk", "numer telefonu",
                 "fax", "faks",
+            ],
+        )
+
+
+class PolishAddressRecognizer(PatternRecognizer):
+    """Catches Polish addresses that spaCy NER misses.
+
+    Detects patterns like:
+    - ul. Marszałkowska 12/4
+    - os. Tysiąclecia 14 m. 3
+    - al. Jana Pawła II 45/2
+    - pl. Wolności 7/12
+    - Rynek 14/3
+    - ul. bpa Wł. Bandurskiego 12/3
+    - ul. Generała Władysława Sikorskiego 88 m. 4
+    """
+    # Polish address prefixes
+    _PREFIX = r"(?:ul\.|os\.|al\.|pl\.|Rynek)"
+    # Street name: one or more capitalized words, possibly with abbreviated titles
+    _STREET = r"(?:\s+(?:[A-ZŁŚŻŹĆŃÓ][a-złśżźćńó]+\.?|[A-Z]\.))+"
+    # Building number with optional apartment
+    _NUMBER = r"\s+\d+[a-zA-Z]?(?:/\d+)?(?:\s+m\.\s*\d+)?"
+
+    PATTERNS = [
+        # Full address: prefix + street name + number
+        Pattern(
+            name="pl_address_full",
+            regex=_PREFIX + _STREET + _NUMBER,
+            score=0.7,
+        ),
+        # Rynek (no prefix needed): Rynek 14/3
+        Pattern(
+            name="pl_address_rynek",
+            regex=r"\bRynek\s+\d+(?:/\d+)?",
+            score=0.6,
+        ),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="LOCATION",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=[
+                "zamieszkał", "siedzib", "adres", "położon", "przy",
+                "zameldowan", "korespondencj",
+            ],
+        )
+
+
+class PolishZipCityRecognizer(PatternRecognizer):
+    """Catches zip code + city patterns that spaCy misses.
+
+    Detects: 21-500 Biała Podlaska, 42-600 Tarnowskie Góry, etc.
+    Polish zip codes are always XX-XXX format.
+    """
+    PATTERNS = [
+        # Zip + 1-3 word city name
+        Pattern(
+            name="pl_zip_city",
+            regex=r"\b\d{2}-\d{3}\s+[A-ZŁŚŻŹĆŃÓ][a-złśżźćńó]+(?:[- ][A-ZŁŚŻŹĆŃÓ][a-złśżźćńó]+){0,2}\b",
+            score=0.4,
+        ),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="LOCATION",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=[
+                "zamieszkał", "siedzib", "adres", "położon",
+                "kod pocztowy", "miejscowość",
             ],
         )
