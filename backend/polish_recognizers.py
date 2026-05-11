@@ -357,12 +357,14 @@ class PolishAddressRecognizer(PatternRecognizer):
     - ul. bpa Wł. Bandurskiego 12/3
     - ul. Generała Władysława Sikorskiego 88 m. 4
     """
-    # Polish address prefixes
-    _PREFIX = r"(?:ul\.|os\.|al\.|pl\.|Rynek)"
+    # Polish address prefixes — abbreviated and declined forms
+    _PREFIX = r"(?:ul\.|ulicy|ulicą|ulic[eę]|os\.|osiedl[eua]|al\.|alei|aleją|ale[ię]|pl\.|placu|plac|Rynek|rynku)"
     # Street name: one or more capitalized words, possibly with abbreviated titles
-    _STREET = r"(?:\s+(?:[A-ZŁŚŻŹĆŃÓ][a-złśżźćńó]+\.?|[A-Z]\.))+"
-    # Building number with optional apartment
-    _NUMBER = r"\s+\d+[a-zA-Z]?(?:/\d+)?(?:\s+m\.\s*\d+)?"
+    _PL_UPPER = r"A-ZĄĆĘŁŃÓŚŹŻ"
+    _PL_LOWER = r"a-ząćęłńóśźż"
+    _STREET = r"(?:\s+(?:[" + _PL_UPPER + r"][" + _PL_LOWER + r"]+\.?|[A-Z]\.))+"
+    # Building number with optional apartment (m./lok./lokal)
+    _NUMBER = r"\s+\d+[a-zA-Z]?(?:/\d+)?(?:\s+(?:m\.|lok\.|lokal)\s*\d+)?"
 
     PATTERNS = [
         # Full address: prefix + street name + number

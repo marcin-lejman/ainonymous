@@ -130,8 +130,8 @@ def _extend_locations_with_numbers(results, text):
         end = r.end
         remaining = text[end:end + 20]  # look ahead up to 20 chars
 
-        # Match optional space + number + optional /number or m. number
-        m = re.match(r"(\s+\d+(?:[/]\d+)?(?:\s+m\.\s*\d+)?)", remaining)
+        # Match optional space + number + optional /number + optional apartment (m./lok./lokal)
+        m = re.match(r"(\s+\d+[a-zA-Z]?(?:[/]\d+)?(?:\s+(?:m\.|lok\.|lokal)\s*\d+)?)", remaining)
         if m:
             # Create a new result with extended end
             from presidio_analyzer import RecognizerResult
