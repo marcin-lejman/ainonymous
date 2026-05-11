@@ -251,8 +251,10 @@ export default function NowaSprawaPage() {
                   ))}
                 </select>
                 <p className="text-[11px] text-neutral-400 mt-1">
-                  Najlepiej działają modele rozumiejące polski: Bielik, Qwen, Gemma.
-                  Modele rozumowania (DeepSeek-R1) mogą nie podążać za formatem.
+                  Zalecany: <strong>Bielik</strong> — jedyny model dobrze realizujący to zadanie po polsku.
+                  {!selectedModel.includes("bielik") && selectedModel && (
+                    <span className="text-amber-600"> Wybrany model może nie podążać za wymaganym formatem.</span>
+                  )}
                 </p>
               </div>
             )}
