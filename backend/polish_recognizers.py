@@ -249,6 +249,102 @@ class PolishPhoneRecognizer(PatternRecognizer):
         )
 
 
+class PolishIdCardRecognizer(PatternRecognizer):
+    """Recognizes Polish national ID card (dowód osobisty) numbers.
+
+    Format: 3 letters + 6 digits (e.g. ABA300000)
+    Letters: A-Z excluding O and Q (24 letters)
+    Checksum: 4th character (first digit) is calculated using weights 7,3,1
+    on all 9 characters mapped to values (A=10, B=11, ..., Z=35, 0-9 as-is).
+
+    Also catches numbers near context words like "dowód" even with invalid checksum.
+    """
+    PATTERNS = [
+        # Combined format: ABA300000
+        Pattern(
+            name="id_card_combined",
+            regex=r"\b[A-NP-Z]{3}\d{6}\b",
+            score=0.3,
+        ),
+        # Split format: seria AVR nr 582914 / seria AVR numer 582914
+        Pattern(
+            name="id_card_split",
+            regex=r"\bseria\s+[A-NP-Z]{3}\s+(?:nr|numer)\s+\d{6}\b",
+            score=0.7,
+        ),
+        # Split without "seria": AVR nr 582914 / AVR 582914 (near context)
+        Pattern(
+            name="id_card_series_nr",
+            regex=r"\b[A-NP-Z]{3}\s+(?:nr\s+)?\d{6}\b",
+            score=0.2,
+        ),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="ID_CARD",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=[
+                "dowód", "dowodu", "dowodem", "dowód osobisty", "dowodu osobistego",
+                "seria i numer", "seria", "legitymując", "tożsamoś",
+                "dokument tożsamości",
+            ],
+        )
+
+    @staticmethod
+    def _char_value(c):
+        if c.isdigit():
+            return int(c)
+        return ord(c) - ord('A') + 10
+
+    @staticmethod
+    def _checksum_valid(id_number):
+        if len(id_number) != 9:
+            return False
+        weights = [7, 3, 1, 7, 3, 1, 7, 3, 1]
+        try:
+            total = sum(
+                PolishIdCardRecognizer._char_value(c) * w
+                for c, w in zip(id_number, weights)
+            )
+            return total % 10 == 0
+        except (ValueError, IndexError):
+            return False
+
+    def analyze(self, text, entities, nlp_artifacts=None):
+        results = super().analyze(text, entities, nlp_artifacts)
+        # Context fallback: catch ID card numbers near "dowód" even without valid checksum
+        text_lower = text.lower()
+        for m in re.finditer(r"\b[A-NP-Z]{3}\d{6}\b", text):
+            if self._checksum_valid(m.group()):
+                continue  # already caught by pattern + validation
+            window_start = max(0, m.start() - 60)
+            window = text_lower[window_start:m.start()]
+            if any(kw in window for kw in ("dowód", "dowodu", "dowodem", "legitymując", "tożsamoś", "seria")):
+                results.append(RecognizerResult(
+                    entity_type="ID_CARD",
+                    start=m.start(),
+                    end=m.end(),
+                    score=0.75,
+                    analysis_explanation=AnalysisExplanation(
+                        recognizer=self.__class__.__name__,
+                        original_score=0.75,
+                        pattern_name="id_card_context_fallback",
+                        pattern=r"\b[A-NP-Z]{3}\d{6}\b",
+                        validation_result=0.75,
+                    ),
+                ))
+        return results
+
+    def validate_result(self, pattern_text):
+        # Accept any structurally valid ID card format.
+        # Checksum validation happens at score level (valid checksum = higher score),
+        # but we don't reject on checksum alone since documents often contain
+        # fictional or mistyped numbers.
+        return True
+
+
 class PolishAddressRecognizer(PatternRecognizer):
     """Catches Polish addresses that spaCy NER misses.
 

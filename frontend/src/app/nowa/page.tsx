@@ -138,6 +138,29 @@ export default function NowaSprawaPage() {
           <Textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onPaste={(e) => {
+              // Extract text from HTML clipboard to preserve paragraph breaks
+              const html = e.clipboardData.getData("text/html");
+              if (html) {
+                e.preventDefault();
+                const doc = new DOMParser().parseFromString(html, "text/html");
+                // Replace block elements with newlines
+                doc.querySelectorAll("br").forEach((br) => br.replaceWith("\n"));
+                doc.querySelectorAll("p, div, tr, li, h1, h2, h3, h4, h5, h6").forEach((el) => {
+                  el.prepend("\n");
+                });
+                const cleaned = (doc.body.textContent || "")
+                  .replace(/\r\n/g, "\n")
+                  .replace(/\n{3,}/g, "\n\n")
+                  .trim();
+                setText((prev) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  const start = target.selectionStart;
+                  const end = target.selectionEnd;
+                  return prev.slice(0, start) + cleaned + prev.slice(end);
+                });
+              }
+            }}
             placeholder="Wklej treść dokumentu tutaj..."
             className="min-h-[200px] font-mono text-sm"
             disabled={!!file}

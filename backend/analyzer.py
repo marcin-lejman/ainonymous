@@ -7,6 +7,7 @@ from polish_recognizers import (
     KrsRecognizer,
     PolishIbanRecognizer,
     PolishPhoneRecognizer,
+    PolishIdCardRecognizer,
     PolishAddressRecognizer,
     PolishZipCityRecognizer,
 )
@@ -104,6 +105,7 @@ def get_analyzer():
     analyzer.registry.add_recognizer(KrsRecognizer())
     analyzer.registry.add_recognizer(PolishIbanRecognizer())
     analyzer.registry.add_recognizer(PolishPhoneRecognizer())
+    analyzer.registry.add_recognizer(PolishIdCardRecognizer())
     analyzer.registry.add_recognizer(PolishAddressRecognizer())
     analyzer.registry.add_recognizer(PolishZipCityRecognizer())
 
@@ -321,6 +323,16 @@ def post_process(results, text):
 
         best = max(group, key=lambda r: r.score)
         deduped.append(best)
+
+    # Final pass: remove entities whose span falls entirely inside a larger ID_CARD span
+    id_spans = [(r.start, r.end) for r in deduped if r.entity_type == "ID_CARD"]
+    if id_spans:
+        deduped = [
+            r for r in deduped
+            if r.entity_type == "ID_CARD" or not any(
+                s <= r.start and r.end <= e for s, e in id_spans
+            )
+        ]
 
     return deduped
 

@@ -10,6 +10,7 @@ export const ENTITY_COLORS: Record<string, { fg: string; bg: string; label: stri
   KRS:          { fg: "text-red-700",    bg: "bg-red-50 border-red-200",     label: "KRS" },
   IBAN_CODE:    { fg: "text-red-700",    bg: "bg-red-50 border-red-200",     label: "IBAN" },
   CREDIT_CARD:  { fg: "text-red-700",    bg: "bg-red-50 border-red-200",     label: "IBAN" },
+  ID_CARD:      { fg: "text-rose-700",    bg: "bg-rose-50 border-rose-200",    label: "Dowód os." },
   REF_NUMBER:   { fg: "text-slate-700",   bg: "bg-slate-50 border-slate-200",  label: "Nr ref." },
   CONTEXTUAL:   { fg: "text-amber-700",  bg: "bg-amber-50 border-amber-200", label: "Kontekstowy" },
 };

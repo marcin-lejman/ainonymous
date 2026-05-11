@@ -17,6 +17,7 @@ const ENTITY_OPTIONS = [
   { type: "KRS", label: "KRS" },
   { type: "REGON", label: "REGON" },
   { type: "IBAN_CODE", label: "IBAN / Nr konta" },
+  { type: "ID_CARD", label: "Dowód osobisty" },
   { type: "PHONE_NUMBER", label: "Telefon" },
   { type: "EMAIL_ADDRESS", label: "E-mail" },
   { type: "REF_NUMBER", label: "Nr referencyjny" },
