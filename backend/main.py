@@ -7,6 +7,7 @@ from typing import Optional
 
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from analyzer import analyze_text
@@ -216,47 +217,7 @@ async def analyze(
             "source": "presidio",
         })
 
-    # Run LLM pass if requested
-    if use_llm:
-        try:
-            settings = load_settings()
-            selected_model = settings.get("llm_model", "SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M")
-            contextual = find_contextual_identifiers(doc_text, model=selected_model)
-            for c in contextual:
-                phrase = c["text"]
-                idx = doc_text.find(phrase)
-
-                # Fuzzy fallback
-                if idx < 0:
-                    words = phrase.split()
-                    best_idx, best_len = -1, 0
-                    for start_w in range(len(words)):
-                        for end_w in range(len(words), start_w, -1):
-                            sub = " ".join(words[start_w:end_w])
-                            if len(sub) < 20:
-                                continue
-                            pos = doc_text.find(sub)
-                            if pos >= 0 and len(sub) > best_len:
-                                best_idx, best_len = pos, len(sub)
-                                break
-                    if best_idx >= 0:
-                        phrase = doc_text[best_idx:best_idx + best_len]
-                        idx = best_idx
-
-                if idx >= 0:
-                    entities.append({
-                        "text": phrase,
-                        "type": "CONTEXTUAL",
-                        "start": idx,
-                        "end": idx + len(phrase),
-                        "score": 0.5,
-                        "source": "llm",
-                        "reason": c.get("reason", ""),
-                    })
-        except Exception as e:
-            print(f"[LLM] Error: {e}")
-
-    # Dedup: LLM subsumes Presidio
+    # Dedup: LLM subsumes Presidio (LLM entities added later via streaming endpoint)
     llm_spans = [(e["start"], e["end"]) for e in entities if e["source"] == "llm"]
     filtered = [
         e for e in entities
@@ -302,6 +263,144 @@ def update_entities(case_id: str, update: EntityUpdate):
     case["approved"] = update.approved
     save_case(case)
     return {"ok": True}
+
+
+@app.post("/api/case/{case_id}/llm-pass")
+def llm_pass_streaming(case_id: str):
+    """Run LLM second pass with SSE streaming progress."""
+    case = load_case(case_id)
+    if not case:
+        return {"error": "Sprawa nie znaleziona"}
+
+    doc_text = case["original_text"]
+    settings = load_settings()
+    selected_model = settings.get("llm_model", "SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M")
+
+    def generate():
+        yield f"data: {json.dumps({'stage': 'loading', 'tokens': 0})}\n\n"
+
+        results = []
+
+        def on_progress(stage, tokens):
+            # Can't yield from callback, so we just track progress
+            pass
+
+        try:
+            # Use streaming Ollama directly for fine-grained progress
+            base_url = "http://localhost:11434"
+            try:
+                requests.get(f"http://host.docker.internal:11434/api/tags", timeout=2)
+                base_url = "http://host.docker.internal:11434"
+            except Exception:
+                pass
+
+            import requests as req
+
+            yield f"data: {json.dumps({'stage': 'generating', 'tokens': 0})}\n\n"
+
+            from llm_pass import SYSTEM_PROMPT
+            resp = req.post(
+                f"{base_url}/api/generate",
+                json={
+                    "model": selected_model,
+                    "prompt": f"{SYSTEM_PROMPT}\n\nDocument:\n{doc_text}\n\nJSON output:",
+                    "stream": True,
+                    "options": {"temperature": 0.1},
+                },
+                timeout=180,
+                stream=True,
+            )
+            resp.raise_for_status()
+
+            raw_parts = []
+            token_count = 0
+            for line in resp.iter_lines():
+                if not line:
+                    continue
+                chunk = json.loads(line)
+                token = chunk.get("response", "")
+                raw_parts.append(token)
+                token_count += 1
+                if token_count % 10 == 0:
+                    yield f"data: {json.dumps({'stage': 'generating', 'tokens': token_count})}\n\n"
+                if chunk.get("done"):
+                    break
+
+            raw = "".join(raw_parts).strip()
+            yield f"data: {json.dumps({'stage': 'parsing', 'tokens': token_count})}\n\n"
+
+            # Parse response
+            import re as _re
+            raw = _re.sub(r"<think>.*?</think>", "", raw, flags=_re.DOTALL).strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            bracket_start = raw.find("[")
+            bracket_end = raw.rfind("]")
+            if bracket_start >= 0 and bracket_end > bracket_start:
+                raw = raw[bracket_start:bracket_end + 1]
+
+            try:
+                contextual = json.loads(raw)
+            except json.JSONDecodeError:
+                contextual = []
+
+            # Match to document text
+            new_entities = []
+            for c in contextual:
+                phrase = c["text"]
+                idx = doc_text.find(phrase)
+                if idx < 0:
+                    words = phrase.split()
+                    best_idx, best_len = -1, 0
+                    for start_w in range(len(words)):
+                        for end_w in range(len(words), start_w, -1):
+                            sub = " ".join(words[start_w:end_w])
+                            if len(sub) < 20:
+                                continue
+                            pos = doc_text.find(sub)
+                            if pos >= 0 and len(sub) > best_len:
+                                best_idx, best_len = pos, len(sub)
+                                break
+                    if best_idx >= 0:
+                        phrase = doc_text[best_idx:best_idx + best_len]
+                        idx = best_idx
+
+                if idx >= 0:
+                    new_entities.append({
+                        "text": phrase,
+                        "type": "CONTEXTUAL",
+                        "start": idx,
+                        "end": idx + len(phrase),
+                        "score": 0.5,
+                        "source": "llm",
+                        "reason": c.get("reason", ""),
+                    })
+
+            # Dedup: remove Presidio entities subsumed by LLM spans
+            llm_spans = [(e["start"], e["end"]) for e in new_entities]
+            existing = case["entities"]
+            filtered = [
+                e for e in existing
+                if not (e["source"] == "presidio" and any(
+                    ls <= e["start"] and e["end"] <= le for ls, le in llm_spans
+                ))
+            ]
+            all_entities = filtered + new_entities
+            all_entities.sort(key=lambda e: e["start"])
+
+            case["entities"] = all_entities
+            case["approved"] = {str(i): True for i in range(len(all_entities))}
+            save_case(case)
+
+            yield f"data: {json.dumps({'stage': 'done', 'tokens': token_count, 'found': len(new_entities)})}\n\n"
+
+        except Exception as e:
+            print(f"[LLM] Error: {e}")
+            yield f"data: {json.dumps({'stage': 'error', 'message': str(e)})}\n\n"
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
 
 
 @app.post("/api/case/{case_id}/pseudonymize")

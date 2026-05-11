@@ -70,20 +70,47 @@ def _get_ollama_url():
     return "http://localhost:11434"
 
 
-def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M"):
+def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M", on_progress=None):
+    """Find contextual identifiers using local LLM.
+
+    on_progress: optional callback(stage, tokens) called during generation.
+    """
     base_url = _get_ollama_url()
+
+    if on_progress:
+        on_progress("loading", 0)
+
+    # Use streaming to report progress
     response = requests.post(
         f"{base_url}/api/generate",
         json={
             "model": model,
             "prompt": f"{SYSTEM_PROMPT}\n\nDocument:\n{text}\n\nJSON output:",
-            "stream": False,
+            "stream": True,
             "options": {"temperature": 0.1},
         },
-        timeout=120,
+        timeout=180,
+        stream=True,
     )
     response.raise_for_status()
-    raw = response.json()["response"].strip()
+
+    raw_parts = []
+    token_count = 0
+    for line in response.iter_lines():
+        if not line:
+            continue
+        chunk = json.loads(line)
+        token = chunk.get("response", "")
+        raw_parts.append(token)
+        token_count += 1
+        if on_progress and token_count % 5 == 0:
+            on_progress("generating", token_count)
+        if chunk.get("done"):
+            break
+
+    raw = "".join(raw_parts).strip()
+    if on_progress:
+        on_progress("parsing", token_count)
 
     # Strip <think>...</think> blocks from reasoning models (deepseek-r1, etc.)
     raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()

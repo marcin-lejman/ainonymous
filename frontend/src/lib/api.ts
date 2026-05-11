@@ -112,6 +112,46 @@ export async function updateSettings(settings: Record<string, string>): Promise<
   });
 }
 
+export function streamLlmPass(
+  caseId: string,
+  onProgress: (data: { stage: string; tokens: number; found?: number; message?: string }) => void,
+  onDone: () => void,
+) {
+  const eventSource = new EventSource(`${API_BASE}/api/case/${caseId}/llm-pass`, {
+  });
+
+  // EventSource doesn't support POST, so we use fetch with ReadableStream
+  fetch(`${API_BASE}/api/case/${caseId}/llm-pass`, { method: "POST" }).then(async (response) => {
+    const reader = response.body?.getReader();
+    if (!reader) return;
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            onProgress(data);
+            if (data.stage === "done" || data.stage === "error") {
+              onDone();
+              return;
+            }
+          } catch { /* ignore parse errors */ }
+        }
+      }
+    }
+    onDone();
+  });
+}
+
 export async function addEntity(
   caseId: string,
   text: string,

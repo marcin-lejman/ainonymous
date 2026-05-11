@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { analyzeDocument, checkOllama, updateSettings, OllamaStatus } from "@/lib/api";
+import { analyzeDocument, checkOllama, updateSettings, streamLlmPass, OllamaStatus } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,6 +19,7 @@ export default function NowaSprawaPage() {
   const [selectedModel, setSelectedModel] = useState<string>("");
   const [analyzing, setAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [llmStatus, setLlmStatus] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -48,14 +49,46 @@ export default function NowaSprawaPage() {
       formData.append("text", text);
     }
 
-    setProgress(50);
+    setProgress(30);
 
     try {
       const result = await analyzeDocument(formData);
-      setProgress(100);
-      setTimeout(() => {
-        router.push(`/sprawa/${result.case_id}`);
-      }, 300);
+      setProgress(useLlm ? 50 : 100);
+
+      if (useLlm) {
+        setLlmStatus("Ładuję model...");
+        streamLlmPass(
+          result.case_id,
+          (data) => {
+            if (data.stage === "loading") {
+              setLlmStatus("Ładuję model...");
+              setProgress(55);
+            } else if (data.stage === "generating") {
+              setLlmStatus(`Generuję odpowiedź... ${data.tokens} tokenów`);
+              setProgress(Math.min(55 + Math.floor(data.tokens / 5), 90));
+            } else if (data.stage === "parsing") {
+              setLlmStatus("Przetwarzam wyniki...");
+              setProgress(95);
+            } else if (data.stage === "done") {
+              const found = data.found || 0;
+              setLlmStatus(`Znaleziono ${found} identyfikatorów kontekstowych`);
+              setProgress(100);
+            } else if (data.stage === "error") {
+              setLlmStatus(`Błąd: ${data.message}`);
+              setProgress(100);
+            }
+          },
+          () => {
+            setTimeout(() => {
+              router.push(`/sprawa/${result.case_id}`);
+            }, 600);
+          },
+        );
+      } else {
+        setTimeout(() => {
+          router.push(`/sprawa/${result.case_id}`);
+        }, 300);
+      }
     } catch (e) {
       setAnalyzing(false);
       setProgress(0);
@@ -80,11 +113,16 @@ export default function NowaSprawaPage() {
             <h2 className="text-lg font-medium text-neutral-800 mb-2">
               Analizuję dokument...
             </h2>
-            <p className="text-sm text-neutral-500 mb-6">
-              {useLlm
-                ? "Presidio + lokalne AI szukają danych osobowych. To może potrwać do 30 sekund."
-                : "Presidio szuka danych osobowych w tekście."}
+            <p className="text-sm text-neutral-500 mb-2">
+              {llmStatus || (useLlm
+                ? "Presidio analizuje tekst..."
+                : "Presidio szuka danych osobowych w tekście.")}
             </p>
+            {useLlm && llmStatus && (
+              <p className="text-xs text-neutral-400 mb-4">
+                Lokalne AI analizuje kontekst — dane nie opuszczają komputera
+              </p>
+            )}
             <Progress value={progress} className="max-w-xs mx-auto" />
           </div>
         </Card>
