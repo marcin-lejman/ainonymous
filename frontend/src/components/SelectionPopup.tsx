@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { getEntityColor } from "@/lib/entity-colors";
 
 interface Props {
@@ -40,7 +41,6 @@ export function SelectionPopup({ containerRef, onAdd }: Props) {
         return;
       }
 
-      // Check if selection is within our container
       const range = selection.getRangeAt(0);
       if (!container!.contains(range.commonAncestorContainer)) {
         return;
@@ -49,19 +49,14 @@ export function SelectionPopup({ containerRef, onAdd }: Props) {
       const text = selection.toString().trim();
       if (text.length < 2) return;
 
+      // Use page-level coordinates (viewport-relative)
       const rect = range.getBoundingClientRect();
-      const containerRect = container!.getBoundingClientRect();
-
-      const relX = rect.left - containerRect.left + rect.width / 2;
-      const relTop = rect.top - containerRect.top;
-      const relBottom = rect.bottom - containerRect.top;
-      // Show below if selection is within 120px of container top
-      const showBelow = relTop < 120;
+      const showBelow = rect.top < 200;
 
       setSelectedText(text);
       setPosition({
-        x: relX,
-        y: showBelow ? relBottom + 8 : relTop - 8,
+        x: rect.left + rect.width / 2,
+        y: showBelow ? rect.bottom + 8 : rect.top - 8,
         below: showBelow,
       });
       setVisible(true);
@@ -91,42 +86,42 @@ export function SelectionPopup({ containerRef, onAdd }: Props) {
 
   if (!visible) return null;
 
-  return (
+  const popup = (
     <div
       ref={popupRef}
-      className="absolute z-50 animate-in fade-in-0 zoom-in-95 duration-150"
+      className="fixed z-[9999] animate-in fade-in-0 zoom-in-95 duration-150"
       style={{
         left: position.x,
         top: position.y,
         transform: position.below ? "translate(-50%, 0)" : "translate(-50%, -100%)",
       }}
     >
-      {/* Arrow on top (when popup is below selection) */}
       {position.below && (
         <div className="flex justify-center">
           <div className="w-2.5 h-2.5 bg-white border-l border-t border-neutral-200 transform rotate-45 mb-[-6px]" />
         </div>
       )}
-      <div className="bg-white rounded-xl shadow-lg shadow-neutral-200/50 border border-neutral-200 p-1.5 min-w-[180px]">
-        <p className="px-2 py-1 text-[11px] text-neutral-400 font-medium truncate max-w-[200px]">
-          &quot;{selectedText.slice(0, 30)}{selectedText.length > 30 ? "…" : ""}&quot;
+      <div className="bg-white rounded-xl shadow-lg shadow-neutral-200/50 border border-neutral-200 p-1.5">
+        <p className="px-2 py-1 text-[11px] text-neutral-400 font-medium truncate max-w-[320px]">
+          &quot;{selectedText.slice(0, 40)}{selectedText.length > 40 ? "…" : ""}&quot;
         </p>
         <div className="h-px bg-neutral-100 my-1" />
-        {ENTITY_OPTIONS.map(({ type, label }) => {
-          const color = getEntityColor(type);
-          return (
-            <button
-              key={type}
-              onClick={() => handleSelect(type)}
-              className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-left rounded-lg hover:bg-neutral-50 transition-colors"
-            >
-              <span className={`w-2 h-2 rounded-full ${color.bg} border shrink-0`} />
-              <span className="text-neutral-700">{label}</span>
-            </button>
-          );
-        })}
+        <div className="grid grid-cols-2 gap-x-1">
+          {ENTITY_OPTIONS.map(({ type, label }) => {
+            const color = getEntityColor(type);
+            return (
+              <button
+                key={type}
+                onClick={() => handleSelect(type)}
+                className="flex items-center gap-2 px-2 py-1.5 text-sm text-left rounded-lg hover:bg-neutral-50 transition-colors"
+              >
+                <span className={`w-2 h-2 rounded-full ${color.bg} border shrink-0`} />
+                <span className="text-neutral-700 whitespace-nowrap">{label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
-      {/* Arrow on bottom (when popup is above selection) */}
       {!position.below && (
         <div className="flex justify-center">
           <div className="w-2.5 h-2.5 bg-white border-r border-b border-neutral-200 transform rotate-45 -mt-[6px]" />
@@ -134,4 +129,7 @@ export function SelectionPopup({ containerRef, onAdd }: Props) {
       )}
     </div>
   );
+
+  // Render via portal at body level so overflow:hidden on parent doesn't clip
+  return createPortal(popup, document.body);
 }

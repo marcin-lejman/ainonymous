@@ -76,10 +76,13 @@ export default function SprawaPage() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  function handleToggle(index: number, value: boolean) {
-    const newApproved = { ...approved, [String(index)]: value };
+  function handleToggleGroup(indices: number[], value: boolean) {
+    const newApproved = { ...approved };
+    for (const i of indices) {
+      newApproved[String(i)] = value;
+    }
     setApproved(newApproved);
-    setPseudoText(null); // invalidate previous export
+    setPseudoText(null);
     if (caseData) {
       updateEntities(id, caseData.entities, newApproved);
     }
@@ -125,8 +128,17 @@ export default function SprawaPage() {
     );
   }
 
-  const activeCount = Object.values(approved).filter(Boolean).length;
-  const totalCount = caseData.entities.length;
+  // Count unique entities (by type+text), not individual spans
+  const uniqueEntities = new Map<string, number[]>();
+  caseData.entities.forEach((ent, i) => {
+    const key = `${ent.type}::${ent.text}`;
+    if (!uniqueEntities.has(key)) uniqueEntities.set(key, []);
+    uniqueEntities.get(key)!.push(i);
+  });
+  const totalCount = uniqueEntities.size;
+  const activeCount = Array.from(uniqueEntities.values()).filter(
+    (indices) => indices.every((i) => approved[String(i)] !== false)
+  ).length;
   const llmCount = caseData.entities.filter((e) => e.source === "llm").length;
 
   return (
@@ -235,7 +247,7 @@ export default function SprawaPage() {
           <EntityList
             entities={caseData.entities}
             approved={approved}
-            onToggle={handleToggle}
+            onToggleGroup={handleToggleGroup}
           />
         </Card>
       </div>
