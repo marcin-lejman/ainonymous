@@ -33,6 +33,8 @@ export interface OllamaStatus {
   available: boolean;
   ollama_running: boolean;
   model_installed: boolean;
+  models?: string[];
+  selected_model?: string | null;
 }
 
 export async function fetchCases(): Promise<CaseSummary[]> {
@@ -95,6 +97,19 @@ export async function checkOllama(): Promise<OllamaStatus> {
   } catch {
     return { available: false, ollama_running: false, model_installed: false };
   }
+}
+
+export async function getSettings(): Promise<Record<string, string>> {
+  const res = await fetch(`${API_BASE}/api/settings`);
+  return res.json();
+}
+
+export async function updateSettings(settings: Record<string, string>): Promise<void> {
+  await fetch(`${API_BASE}/api/settings`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(settings),
+  });
 }
 
 export async function addEntity(

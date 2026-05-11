@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { analyzeDocument, checkOllama, OllamaStatus } from "@/lib/api";
+import { analyzeDocument, checkOllama, updateSettings, OllamaStatus } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,12 +16,20 @@ export default function NowaSprawaPage() {
   const [file, setFile] = useState<File | null>(null);
   const [useLlm, setUseLlm] = useState(false);
   const [ollama, setOllama] = useState<OllamaStatus | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string>("");
   const [analyzing, setAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
-    checkOllama().then(setOllama);
+    checkOllama().then((status) => {
+      setOllama(status);
+      if (status.selected_model) {
+        setSelectedModel(status.selected_model);
+      } else if (status.models && status.models.length > 0) {
+        setSelectedModel(status.models[0]);
+      }
+    });
   }, []);
 
   async function handleAnalyze() {
@@ -170,7 +178,7 @@ export default function NowaSprawaPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-neutral-800">
-                  Analiza kontekstowa (Bielik AI)
+                  Analiza kontekstowa (lokalne AI)
                 </p>
                 <p className="text-xs text-neutral-500 mt-0.5">
                   Wykrywa identyfikatory opisowe, np. &quot;jedyna wspólniczka w biurze&quot;.
@@ -180,31 +188,59 @@ export default function NowaSprawaPage() {
               <Switch
                 checked={useLlm}
                 onCheckedChange={setUseLlm}
-                disabled={!ollama?.available}
+                disabled={!ollama?.ollama_running || !ollama?.models?.length}
               />
             </div>
-            {ollama && !ollama.available && (
+
+            {/* Model selector — shown when Ollama is running and has models */}
+            {ollama?.ollama_running && ollama.models && ollama.models.length > 0 && (
+              <div className="mt-3">
+                <label className="block text-xs font-medium text-neutral-600 mb-1">
+                  Model
+                </label>
+                <select
+                  value={selectedModel}
+                  onChange={(e) => {
+                    setSelectedModel(e.target.value);
+                    updateSettings({ llm_model: e.target.value });
+                  }}
+                  className="h-9 w-full px-3 rounded-lg border border-neutral-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-violet-200 focus:border-violet-400 transition-colors"
+                >
+                  {ollama.models.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-neutral-400 mt-1">
+                  Wybór zostanie zapamiętany. Zainstaluj nowe modele: <code className="bg-neutral-100 px-1 rounded">ollama pull nazwa_modelu</code>
+                </p>
+              </div>
+            )}
+
+            {/* Setup guide — shown when Ollama is not available */}
+            {ollama && !ollama.ollama_running && (
               <div className="mt-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
                 <p className="text-xs font-medium text-amber-800 mb-1">
-                  {!ollama.ollama_running
-                    ? "Ollama nie jest uruchomiona"
-                    : "Model Bielik nie jest zainstalowany"}
+                  Ollama nie jest uruchomiona
                 </p>
                 <p className="text-xs text-amber-700">
-                  {!ollama.ollama_running ? (
-                    <>
-                      Zainstaluj Ollama ze strony{" "}
-                      <span className="font-mono">ollama.com</span>, a następnie uruchom:{" "}
-                      <code className="bg-amber-100 px-1 rounded">ollama serve</code>
-                    </>
-                  ) : (
-                    <>
-                      Pobierz model poleceniem:{" "}
-                      <code className="bg-amber-100 px-1 rounded">
-                        ollama pull SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M
-                      </code>
-                    </>
-                  )}
+                  Zainstaluj Ollama ze strony{" "}
+                  <span className="font-mono">ollama.com</span>, a następnie uruchom:{" "}
+                  <code className="bg-amber-100 px-1 rounded">ollama serve</code>
+                </p>
+              </div>
+            )}
+            {ollama?.ollama_running && (!ollama.models || ollama.models.length === 0) && (
+              <div className="mt-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+                <p className="text-xs font-medium text-amber-800 mb-1">
+                  Brak zainstalowanych modeli
+                </p>
+                <p className="text-xs text-amber-700">
+                  Pobierz model poleceniem:{" "}
+                  <code className="bg-amber-100 px-1 rounded">
+                    ollama pull SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M
+                  </code>
                 </p>
               </div>
             )}

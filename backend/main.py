@@ -114,6 +114,19 @@ def restore_text(text: str, mapping: dict) -> str:
     return text
 
 
+SETTINGS_PATH = DATA_DIR / "settings.json"
+
+def load_settings() -> dict:
+    if SETTINGS_PATH.exists():
+        with open(SETTINGS_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+def save_settings(settings: dict):
+    with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
+        json.dump(settings, f, ensure_ascii=False, indent=2)
+
+
 # --- Endpoints ---
 
 @app.get("/api/health")
@@ -123,7 +136,24 @@ def health():
 
 @app.get("/api/ollama/status")
 def ollama_status():
-    return check_ollama_status()
+    settings = load_settings()
+    selected_model = settings.get("llm_model")
+    status = check_ollama_status(model=selected_model or "SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M")
+    status["selected_model"] = selected_model
+    return status
+
+
+@app.get("/api/settings")
+def get_settings():
+    return load_settings()
+
+
+@app.put("/api/settings")
+def update_settings(body: dict):
+    settings = load_settings()
+    settings.update(body)
+    save_settings(settings)
+    return settings
 
 
 @app.get("/api/cases")
@@ -185,7 +215,9 @@ async def analyze(
     # Run LLM pass if requested
     if use_llm:
         try:
-            contextual = find_contextual_identifiers(doc_text)
+            settings = load_settings()
+            selected_model = settings.get("llm_model", "SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M")
+            contextual = find_contextual_identifiers(doc_text, model=selected_model)
             for c in contextual:
                 phrase = c["text"]
                 idx = doc_text.find(phrase)
