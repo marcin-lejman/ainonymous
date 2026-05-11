@@ -104,12 +104,18 @@ export async function getSettings(): Promise<Record<string, string>> {
   return res.json();
 }
 
-export async function updateSettings(settings: Record<string, string>): Promise<void> {
+export async function updateSettings(settings: Record<string, string | null>): Promise<void> {
   await fetch(`${API_BASE}/api/settings`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(settings),
   });
+}
+
+export async function getDefaultPrompt(): Promise<string> {
+  const res = await fetch(`${API_BASE}/api/settings/default-prompt`);
+  const data = await res.json();
+  return data.prompt;
 }
 
 export function streamLlmPass(

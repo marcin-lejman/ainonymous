@@ -11,7 +11,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from analyzer import analyze_text
-from llm_pass import check_ollama_status, find_contextual_identifiers
+from llm_pass import check_ollama_status, find_contextual_identifiers, get_prompt, build_full_prompt
 
 app = FastAPI(title="Anonymization Layer API")
 
@@ -151,6 +151,13 @@ def get_settings():
 
 class SettingsUpdate(BaseModel):
     llm_model: Optional[str] = None
+    llm_prompt: Optional[str] = None
+
+@app.get("/api/settings/default-prompt")
+def get_default_prompt():
+    from llm_pass import DEFAULT_PROMPT
+    return {"prompt": DEFAULT_PROMPT}
+
 
 @app.put("/api/settings")
 def update_settings(body: SettingsUpdate):
@@ -298,12 +305,13 @@ def llm_pass_streaming(case_id: str):
 
             yield f"data: {json.dumps({'stage': 'generating', 'tokens': 0})}\n\n"
 
-            from llm_pass import SYSTEM_PROMPT
+            prompt_text = get_prompt(settings)
+            full_prompt = build_full_prompt(prompt_text, doc_text)
             resp = req.post(
                 f"{base_url}/api/generate",
                 json={
                     "model": selected_model,
-                    "prompt": f"{SYSTEM_PROMPT}\n\nDocument:\n{doc_text}\n\nJSON output:",
+                    "prompt": full_prompt,
                     "stream": True,
                     "options": {"temperature": 0.1},
                 },

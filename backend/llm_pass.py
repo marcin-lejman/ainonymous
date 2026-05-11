@@ -1,30 +1,27 @@
 import json
 import re
 import requests
+from pathlib import Path
 
-SYSTEM_PROMPT = """Jesteś audytorem prywatności analizującym dokumenty prawne.
-Twoim zadaniem jest znalezienie KONTEKSTOWYCH identyfikatorów osobowych — fraz,
-które mogą jednoznacznie zidentyfikować osobę, nawet jeśli nie podano jej imienia
-ani nazwiska.
 
-Przykłady fraz do oznaczenia:
-- Rola połączona z lokalizacją ("jedyna wspólniczka w warszawskim biurze")
-- Relacje rodzinne z identyfikującym szczegółem ("syn Wynajmującej, który prowadzi praktykę adwokacką w tym samym budynku")
-- Rola powiązana z czasem ("prezes, który odszedł w marcu 2023")
-- Unikalne opisy ("wieloletni najemca sąsiedniego lokalu, emerytowany profesor")
+def _load_default_prompt():
+    path = Path(__file__).parent / "default_prompt.txt"
+    return path.read_text(encoding="utf-8").strip()
 
-NIE oznaczaj:
-- Ogólnych ról bez identyfikujących szczegółów ("powód", "spółka", "Najemca")
-- Już nazwanych osób z imienia i nazwiska (te są obsługiwane osobno przez inny system)
-- Zwykłych stanowisk bez kontekstu
-- Nazw firm i organizacji (te są obsługiwane osobno)
 
-WAŻNE: W polu "text" podaj DOKŁADNY cytat z dokumentu — skopiuj tekst słowo w słowo,
-zachowując oryginalną odmianę gramatyczną (przypadki, końcówki). NIE zmieniaj formy wyrazów.
+DEFAULT_PROMPT = _load_default_prompt()
 
-Odpowiedz tablicą JSON obiektów, każdy z polami "text" (DOKŁADNY cytat z dokumentu)
-i "reason" (jedno krótkie zdanie wyjaśniające dlaczego). Jeśli nic nie kwalifikuje się, zwróć [].
-Odpowiedz WYŁĄCZNIE tablicą JSON, bez żadnego innego tekstu."""
+
+def get_prompt(settings: dict = None) -> str:
+    """Get the LLM prompt — from settings if customized, otherwise default."""
+    if settings and settings.get("llm_prompt"):
+        return settings["llm_prompt"]
+    return DEFAULT_PROMPT
+
+
+def build_full_prompt(system_prompt: str, document_text: str) -> str:
+    """Build the full prompt with document wrapped in <document> tags."""
+    return f"{system_prompt}\n\n<document>\n{document_text}\n</document>"
 
 
 def check_ollama_status(model="SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M"):
@@ -70,12 +67,15 @@ def _get_ollama_url():
     return "http://localhost:11434"
 
 
-def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M", on_progress=None):
+def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M", on_progress=None, settings=None):
     """Find contextual identifiers using local LLM.
 
     on_progress: optional callback(stage, tokens) called during generation.
+    settings: dict with optional llm_prompt override.
     """
     base_url = _get_ollama_url()
+    prompt = get_prompt(settings)
+    full_prompt = build_full_prompt(prompt, text)
 
     if on_progress:
         on_progress("loading", 0)
@@ -85,7 +85,7 @@ def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct
         f"{base_url}/api/generate",
         json={
             "model": model,
-            "prompt": f"{SYSTEM_PROMPT}\n\nDocument:\n{text}\n\nJSON output:",
+            "prompt": full_prompt,
             "stream": True,
             "options": {"temperature": 0.1},
         },

@@ -41,6 +41,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a href="/przywroc" className="px-3 py-1.5 rounded-lg text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-colors">
                 Przywróć dane
               </a>
+              <a href="/ustawienia" className="px-3 py-1.5 rounded-lg text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-colors">
+                Ustawienia
+              </a>
             </nav>
           </div>
         </header>
