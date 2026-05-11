@@ -11,7 +11,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from analyzer import analyze_text
-from llm_pass import check_ollama_status, find_contextual_identifiers, get_prompt, build_full_prompt
+from llm_pass import check_ollama_status, find_contextual_identifiers, get_prompt, JSON_SCHEMA
 
 app = FastAPI(title="Anonymization Layer API")
 
@@ -305,35 +305,22 @@ def llm_pass_streaming(case_id: str):
 
             yield f"data: {json.dumps({'stage': 'generating', 'tokens': 0})}\n\n"
 
-            prompt_text = get_prompt(settings)
-            full_prompt = build_full_prompt(prompt_text, doc_text)
-            print(f"[LLM] Prompt length: {len(full_prompt)} chars")
-            print(f"[LLM] Prompt starts with: {full_prompt[:200]}")
-            print(f"[LLM] Prompt ends with: {full_prompt[-100:]}")
-            print(f"[LLM] Prompt source: {'custom (from settings)' if settings.get('llm_prompt') else 'default (default_prompt.txt)'}")
-            # Use /api/chat with system+user roles + JSON schema enforcement
-            document_msg = f"<document>\n{doc_text}\n</document>"
+            system_prompt = get_prompt(settings)
+            print(f"[LLM] System prompt: {len(system_prompt)} chars, starts: {system_prompt[:80]}")
+            print(f"[LLM] Document: {len(doc_text)} chars")
+            print(f"[LLM] Model: {selected_model}")
+            print(f"[LLM] Prompt source: {'custom' if settings.get('llm_prompt') else 'default'}")
             resp = req.post(
                 f"{base_url}/api/chat",
                 json={
                     "model": selected_model,
                     "messages": [
-                        {"role": "system", "content": prompt_text},
-                        {"role": "user", "content": document_msg},
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": doc_text},
                     ],
+                    "format": JSON_SCHEMA,
                     "stream": True,
-                    "options": {"temperature": 0.1},
-                    "format": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "text": {"type": "string"},
-                                "reason": {"type": "string"},
-                            },
-                            "required": ["text", "reason"],
-                        },
-                    },
+                    "options": {"temperature": 0.1, "num_ctx": 32768},
                 },
                 timeout=180,
                 stream=True,

@@ -19,9 +19,17 @@ def get_prompt(settings: dict = None) -> str:
     return DEFAULT_PROMPT
 
 
-def build_full_prompt(system_prompt: str, document_text: str) -> str:
-    """Build the full prompt with document wrapped in <document> tags."""
-    return f"{system_prompt}\n\n<document>\n{document_text}\n</document>"
+JSON_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "text": {"type": "string", "description": "Exact quote from the document"},
+            "reason": {"type": "string", "description": "Short explanation in Polish"},
+        },
+        "required": ["text", "reason"],
+    },
+}
 
 
 def check_ollama_status(model="SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M"):
@@ -74,35 +82,22 @@ def find_contextual_identifiers(text, model="SpeakLeash/bielik-11b-v3.0-instruct
     settings: dict with optional llm_prompt override.
     """
     base_url = _get_ollama_url()
-    prompt = get_prompt(settings)
-    full_prompt = build_full_prompt(prompt, text)
+    system_prompt = get_prompt(settings)
 
     if on_progress:
         on_progress("loading", 0)
 
-    # Use /api/chat with system+user roles + JSON schema enforcement
-    document_msg = f"<document>\n{text}\n</document>"
     response = requests.post(
         f"{base_url}/api/chat",
         json={
             "model": model,
             "messages": [
-                {"role": "system", "content": prompt},
-                {"role": "user", "content": document_msg},
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": text},
             ],
+            "format": JSON_SCHEMA,
             "stream": True,
-            "options": {"temperature": 0.1},
-            "format": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "text": {"type": "string"},
-                        "reason": {"type": "string"},
-                    },
-                    "required": ["text", "reason"],
-                },
-            },
+            "options": {"temperature": 0.1, "num_ctx": 32768},
         },
         timeout=180,
         stream=True,
