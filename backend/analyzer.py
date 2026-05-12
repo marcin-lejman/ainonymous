@@ -13,6 +13,7 @@ from polish_recognizers import (
     PolishCompanyRecognizer,
 )
 
+import os as _os
 import re as _re
 
 # Polish legal role stems — we check if a single-word PERSON/ORG entity
@@ -73,8 +74,8 @@ def get_analyzer():
     configuration = {
         "nlp_engine_name": "spacy",
         "models": [
-            {"lang_code": "pl", "model_name": "pl_core_news_lg"},
-            {"lang_code": "en", "model_name": "en_core_web_lg"},
+            {"lang_code": "pl", "model_name": f"pl_core_news_{_os.environ.get('SPACY_MODEL_SIZE', 'lg')}"},
+            {"lang_code": "en", "model_name": f"en_core_web_{_os.environ.get('SPACY_MODEL_SIZE', 'lg')}"},
         ],
         "ner_model_configuration": {
             "model_to_presidio_entity_mapping": {

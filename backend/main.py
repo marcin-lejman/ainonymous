@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import uuid
 from datetime import datetime
@@ -13,6 +14,8 @@ from pydantic import BaseModel
 from analyzer import analyze_text
 from llm_pass import check_ollama_status, find_contextual_identifiers, get_prompt, JSON_SCHEMA
 
+IS_VERCEL = bool(os.environ.get("VERCEL"))
+
 app = FastAPI(title="Anonymization Layer API")
 
 app.add_middleware(
@@ -22,7 +25,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DATA_DIR = Path("/data") if Path("/data").exists() else Path(__file__).parent.parent / "data"
+_data_env = os.environ.get("DATA_DIR")
+if _data_env:
+    DATA_DIR = Path(_data_env)
+elif Path("/data").exists():
+    DATA_DIR = Path("/data")
+else:
+    DATA_DIR = Path(__file__).parent.parent / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
