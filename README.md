@@ -55,6 +55,14 @@ Otwórz przeglądarkę i wejdź na: **http://localhost:3000**
 
 Aby zatrzymać aplikację, wciśnij `Ctrl+C` w terminalu.
 
+**Kolejne uruchomienia:** Nie musisz powtarzać całej procedury. Wystarczy otworzyć terminal w folderze `ainonymous` i wpisać:
+
+```
+docker compose up
+```
+
+(Bez `--build` — obraz jest już zbudowany, start zajmie kilka sekund.)
+
 ### Sposób B: Z interfejsu Docker Desktop
 
 Jeśli nie chcesz korzystać z terminala:
