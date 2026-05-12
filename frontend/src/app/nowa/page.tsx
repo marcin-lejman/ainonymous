@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, DragEvent } from "react";
 import { useRouter } from "next/navigation";
 import { analyzeDocument, checkOllama, updateSettings, streamLlmPass, OllamaStatus } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,27 @@ export default function NowaSprawaPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [llmStatus, setLlmStatus] = useState("");
+  const [dragging, setDragging] = useState(false);
   const router = useRouter();
+
+  const handleDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragging(false);
+    const dropped = e.dataTransfer.files?.[0];
+    if (dropped && /\.(txt|docx|pdf)$/i.test(dropped.name)) {
+      setFile(dropped);
+    }
+  }, []);
+
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragging(false);
+  }, []);
 
   useEffect(() => {
     checkOllama().then((status) => {
@@ -147,7 +167,16 @@ export default function NowaSprawaPage() {
             <label className="block text-sm font-medium text-neutral-700 mb-1.5">
               Dokument
             </label>
-            <div className="border-2 border-dashed border-neutral-200 rounded-xl p-6 text-center hover:border-neutral-300 transition-colors">
+            <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors ${
+                dragging
+                  ? "border-violet-400 bg-violet-50"
+                  : "border-neutral-200 hover:border-neutral-300"
+              }`}
+            >
               <input
                 type="file"
                 accept=".txt,.docx,.pdf"
@@ -164,7 +193,7 @@ export default function NowaSprawaPage() {
                 ) : (
                   <>
                     <p className="text-sm text-neutral-600 font-medium">
-                      Kliknij, aby wybrać plik
+                      Kliknij lub upuść plik
                     </p>
                     <p className="text-xs text-neutral-400 mt-1">
                       .txt, .docx lub .pdf

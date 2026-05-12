@@ -82,26 +82,30 @@ class NipRecognizer(PatternRecognizer):
     def analyze(self, text, entities, nlp_artifacts=None):
         results = super().analyze(text, entities, nlp_artifacts)
         text_lower = text.lower()
-        for m in re.finditer(r"\b\d{3}-\d{3}-\d{2}-\d{2}\b", text):
-            digits = "".join(c for c in m.group() if c.isdigit())
-            if self._checksum_valid(digits):
-                continue
-            window_start = max(0, m.start() - 30)
-            window = text_lower[window_start:m.start()]
-            if "nip" in window:
-                results.append(RecognizerResult(
-                    entity_type="NIP",
-                    start=m.start(),
-                    end=m.end(),
-                    score=0.75,
-                    analysis_explanation=AnalysisExplanation(
-                        recognizer=self.__class__.__name__,
-                        original_score=0.75,
-                        pattern_name="nip_context_fallback",
-                        pattern=r"\b\d{3}-\d{3}-\d{2}-\d{2}\b",
-                        validation_result=0.75,
-                    ),
-                ))
+        for pattern, name in [
+            (r"\b\d{3}-\d{3}-\d{2}-\d{2}\b", "nip_dashed_context_fallback"),
+            (r"\b\d{10}\b", "nip_plain_context_fallback"),
+        ]:
+            for m in re.finditer(pattern, text):
+                digits = "".join(c for c in m.group() if c.isdigit())
+                if self._checksum_valid(digits):
+                    continue
+                window_start = max(0, m.start() - 30)
+                window = text_lower[window_start:m.start()]
+                if "nip" in window:
+                    results.append(RecognizerResult(
+                        entity_type="NIP",
+                        start=m.start(),
+                        end=m.end(),
+                        score=0.75,
+                        analysis_explanation=AnalysisExplanation(
+                            recognizer=self.__class__.__name__,
+                            original_score=0.75,
+                            pattern_name=name,
+                            pattern=pattern,
+                            validation_result=0.75,
+                        ),
+                    ))
         return results
 
     def validate_result(self, pattern_text):
@@ -362,7 +366,7 @@ class PolishAddressRecognizer(PatternRecognizer):
     # Street name: one or more capitalized words, possibly with abbreviated titles
     _PL_UPPER = r"A-ZĄĆĘŁŃÓŚŹŻ"
     _PL_LOWER = r"a-ząćęłńóśźż"
-    _STREET = r"(?:\s+(?:[" + _PL_UPPER + r"][" + _PL_LOWER + r"]+\.?|[A-Z]\.))+"
+    _STREET = r"(?:\s+(?:[" + _PL_UPPER + r"][" + _PL_LOWER + r"]+(?:-[" + _PL_UPPER + r"][" + _PL_LOWER + r"]+)*\.?|[A-Z]\.))+"
     # Building number with optional apartment (m./lok./lokal)
     _NUMBER = r"\s+\d+[a-zA-Z]?(?:/\d+)?(?:\s+(?:m\.|lok\.|lokal)\s*\d+)?"
 
@@ -389,6 +393,48 @@ class PolishAddressRecognizer(PatternRecognizer):
             context=[
                 "zamieszkał", "siedzib", "adres", "położon", "przy",
                 "zameldowan", "korespondencj",
+            ],
+        )
+
+
+class PolishCompanyRecognizer(PatternRecognizer):
+    """Catches company names followed by a Polish legal form that spaCy NER misses.
+
+    Detects patterns like:
+    - NovaLokum spółka z ograniczoną odpowiedzialnością
+    - ByteForge Sp. z o.o.
+    - Kowalski i Partnerzy S.A.
+    """
+    _PL_UPPER = r"A-ZĄĆĘŁŃÓŚŹŻ"
+    _PL_LOWER = r"a-ząćęłńóśźż"
+    _NAME = r"[" + _PL_UPPER + r"][" + _PL_LOWER + _PL_UPPER + r"]{1,}"
+    _LEGAL_FORMS = (
+        r"spółk[aęąi]\s+z\s+ograniczon[aą]\s+odpowiedzialnością"
+        r"|sp(?:ółka)?\.?\s*z\s*o\.?\s*o\.?"
+        r"|sp(?:ółka)?\.?\s*(?:j|k|p)\."
+        r"|s\.?\s*c\.?"
+        r"|S\.\s*A\.?|S\.?\s*A\."  # S.A. — require at least one dot
+        r"|spółk[aęąi]\s+komandytow[aą]"
+        r"|spółk[aęąi]\s+cywiln[aąej]"
+        r"|spółk[aęąi]\s+partnersk[aąiej]"
+    )
+
+    PATTERNS = [
+        Pattern(
+            name="pl_company_legal_form",
+            regex=_NAME + r"(?:\s+" + _NAME + r"){0,3}\s+(?:" + _LEGAL_FORMS + r")",
+            score=0.75,
+        ),
+    ]
+
+    def __init__(self):
+        super().__init__(
+            supported_entity="ORGANIZATION",
+            patterns=self.PATTERNS,
+            supported_language="pl",
+            context=[
+                "spółka", "firma", "przedsiębiorc", "podmiot",
+                "siedzib", "KRS", "NIP", "REGON",
             ],
         )
 

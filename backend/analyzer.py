@@ -10,6 +10,7 @@ from polish_recognizers import (
     PolishIdCardRecognizer,
     PolishAddressRecognizer,
     PolishZipCityRecognizer,
+    PolishCompanyRecognizer,
 )
 
 import re as _re
@@ -108,9 +109,78 @@ def get_analyzer():
     analyzer.registry.add_recognizer(PolishIdCardRecognizer())
     analyzer.registry.add_recognizer(PolishAddressRecognizer())
     analyzer.registry.add_recognizer(PolishZipCityRecognizer())
+    analyzer.registry.add_recognizer(PolishCompanyRecognizer())
 
     _analyzer_instance = analyzer
     return analyzer
+
+
+_FULL_LEGAL_FORM_RE = _re.compile(
+    r"\s+(?:"
+    r"spółk[aęąi]\s+z\s+ograniczon[aą]\s+odpowiedzialnością"
+    r"|sp(?:ółka)?\.?\s*(?:z\s*o\.?\s*o\.?|j\.|k\.|p\.)"
+    r"|s\.?\s*c\.?"
+    r"|s\.\s*a\.?|s\.?\s*a\."  # S.A. — require at least one dot
+    r"|sp(?:ółka)?\.?\s+komandytow[aą]"
+    r"|spółk[aęąi]\s+cywiln[aąej]"
+    r"|spółk[aęąi]\s+partnersk[aąiej]"
+    r")",
+    _re.IGNORECASE,
+)
+
+
+def _reclassify_person_with_legal_form(results, text):
+    """Reclassify PERSON entities as ORGANIZATION when followed by a company legal form.
+
+    e.g. "NovaLokum spółka z ograniczoną odpowiedzialnością" → one ORG entity.
+    """
+    from presidio_analyzer import RecognizerResult
+
+    updated = []
+    for r in results:
+        if r.entity_type != "PERSON":
+            updated.append(r)
+            continue
+
+        remaining = text[r.end:r.end + 80]
+        m = _FULL_LEGAL_FORM_RE.match(remaining)
+        if m:
+            updated.append(RecognizerResult(
+                entity_type="ORGANIZATION",
+                start=r.start,
+                end=r.end + m.end(),
+                score=max(r.score, 0.85),
+                analysis_explanation=r.analysis_explanation,
+            ))
+        else:
+            updated.append(r)
+    return updated
+
+
+def _extend_locations_with_zip(results, text):
+    """Extend LOCATION entities backward to include a preceding zip code (XX-XXX)."""
+    from presidio_analyzer import RecognizerResult
+
+    extended = []
+    for r in results:
+        if r.entity_type != "LOCATION":
+            extended.append(r)
+            continue
+
+        lookback = text[max(0, r.start - 10):r.start]
+        m = _re.search(r"\d{2}-\d{3}\s*$", lookback)
+        if m:
+            new_start = max(0, r.start - 10) + m.start()
+            extended.append(RecognizerResult(
+                entity_type=r.entity_type,
+                start=new_start,
+                end=r.end,
+                score=r.score,
+                analysis_explanation=r.analysis_explanation,
+            ))
+        else:
+            extended.append(r)
+    return extended
 
 
 def _extend_locations_with_numbers(results, text):
@@ -131,7 +201,7 @@ def _extend_locations_with_numbers(results, text):
         remaining = text[end:end + 20]  # look ahead up to 20 chars
 
         # Match optional space + number + optional /number + optional apartment (m./lok./lokal)
-        m = re.match(r"(\s+\d+[a-zA-Z]?(?:[/]\d+)?(?:\s+(?:m\.|lok\.|lokal)\s*\d+)?)", remaining)
+        m = re.match(r"([ \t]+\d+[a-zA-Z]?(?:[/]\d+)?(?:[ \t]+(?:m\.|lok\.|lokal)[ \t]*\d+)?)", remaining)
         if m:
             # Create a new result with extended end
             from presidio_analyzer import RecognizerResult
@@ -235,14 +305,14 @@ def _merge_entity_sequences(results, text):
     LEGAL_FORMS = (
         r"sp(?:ółka)?\.?\s*(?:z\s*o\.?\s*o\.?|j\.|k\.|p\.)"
         r"|s\.?\s*c\.?"
-        r"|S\.?\s*A\.?"
+        r"|s\.\s*a\.?|s\.?\s*a\."  # S.A. — require at least one dot to avoid matching "sa"
         r"|sp(?:ółka)?\.?\s+komandytowa"
         r"|spółka\s+cywilna"
         r"|spółka\s+partnerska"
         r"|z\s*o\.?\s*o\.?"
     )
     company_suffix = re.compile(
-        r"(?:[\s\-][-\w\s]*?)?\s*(?:" + LEGAL_FORMS + r")",
+        r"(?:[\s\-][-\w\s]{0,30}?)?\s*(?:" + LEGAL_FORMS + r")",
         re.IGNORECASE
     )
     final_results = []
@@ -288,9 +358,11 @@ def post_process(results, text):
             continue
         pre_filtered.append(r)
 
-    # Now merge and extend
+    # Reclassify PERSON→ORG when followed by legal forms, then merge and extend
+    pre_filtered = _reclassify_person_with_legal_form(pre_filtered, text)
     results = _merge_entity_sequences(pre_filtered, text)
     results = _extend_locations_with_numbers(results, text)
+    results = _extend_locations_with_zip(results, text)
 
     result_map = {}
     filtered = results
