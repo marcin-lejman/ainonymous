@@ -118,6 +118,20 @@ Analizę AI możesz skonfigurować w zakładce **Ustawienia** — wybierz model 
 
 ---
 
+## Rozwiązywanie problemów
+
+**„port is already allocated" przy uruchamianiu**
+
+Oznacza to, że port 3000 jest zajęty przez inną aplikację. Aby sprawdzić co go zajmuje, wpisz w terminalu:
+
+```
+docker ps --filter "publish=3000"
+```
+
+Jeśli zobaczysz inny kontener — zatrzymaj go komendą `docker stop <nazwa_kontenera>` i spróbuj ponownie. Jeśli to nie kontener Dockera, zamknij aplikację korzystającą z tego portu (np. inny serwer deweloperski).
+
+---
+
 ## Wersja online (demo)
 
 Wersja demonstracyjna dostępna jest pod adresem:
