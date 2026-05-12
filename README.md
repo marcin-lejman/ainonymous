@@ -4,6 +4,8 @@ Lokalne narzędzie do anonimizacji dokumentów prawnych w języku polskim.
 
 AInonymous automatycznie wykrywa dane osobowe w dokumentach (imiona, nazwiska, adresy, numery PESEL, NIP, REGON, KRS, numery telefonów, adresy e-mail i inne) i zamienia je na oznaczenia typu `[PERSON_1]`, `[LOCATION_2]` itp. Cały proces odbywa się lokalnie — Twoje dokumenty nie opuszczają Twojego komputera.
 
+![AInonymous — widok anonimizacji dokumentu](screenshot.jpeg)
+
 ---
 
 ## Co jest potrzebne
